@@ -1,0 +1,38 @@
+{
+  "name": "youth4change-backend",
+  "version": "1.0.0",
+  "description": "server for connect mobile app and admin dashboard operations",
+  "main": "src/index.js",
+  "type": "module",
+  "scripts": {
+    "start": "nodemon -r dotenv/config --experimental-json-modules src/index.js",
+    "eslint": "npx eslint ."
+  },
+  "author": "DigiSangha",
+  "license": "ISC",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.6",
+    "express": "^4.21.1",
+    "express-rate-limit": "^7.5.0",
+    "joi": "^17.13.3",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.8.3",
+    "multer": "^1.4.5-lts.1",
+    "nodemailer": "^6.10.0",
+    "uuid": "^11.0.5"
+  },
+  "devDependencies": {
+    "@babel/eslint-parser": "^7.25.9",
+    "@eslint/js": "^9.16.0",
+    "eslint": "^9.16.0",
+    "eslint-plugin-import": "^2.31.0",
+    "eslint-plugin-unicorn": "^56.0.1",
+    "globals": "^15.13.0",
+    "husky": "^9.1.7",
+    "nodemon": "^3.1.7",
+    "prettier": "^3.4.1"
+  }
+}
