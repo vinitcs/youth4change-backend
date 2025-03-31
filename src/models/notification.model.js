@@ -5,23 +5,17 @@ const notificationSchema = new Schema(
     type: {
       type: String,
       required: true,
-    },
+    }, // AdminReview, SharePost
 
     // If admin share
     sharedByAdminName: {
       type: String,
       default: "",
     },
+
     isBroadcast: {
       type: Boolean,
       default: false,
-    },
-
-    // If user share
-    sharedByUserId: {
-      type: Types.ObjectId,
-      ref: "User",
-      default: null,
     },
     sharedToUserId: {
       type: Types.ObjectId,

@@ -9,16 +9,27 @@ import { allReport } from "../../controllers/reportControllers/allReport.control
 import { selectedReport } from "../../controllers/reportControllers/selectedReport.controller.js";
 import { adminSignUp } from "../../controllers/adminControllers/adminSignUp.controller.js";
 import { loggedAdmin } from "../../controllers/adminControllers/loggedAdmin.controller.js";
+
 import postUpload from "../../utils/helper/multer/post.multer.js";
 import { addPost } from "../../controllers/postControllers/addPost.controller.js";
 import { selectedPost } from "../../controllers/postControllers/selectedPost.controller.js";
 import { updatePost } from "../../controllers/postControllers/updatePost.controller.js";
 import { deletePost } from "../../controllers/postControllers/deletePost.controller.js";
 import { postsCreatedByAdmin } from "../../controllers/postControllers/postsCreatedByAdmin.controller.js";
+
 import { createStage } from "../../controllers/stageControllers/createStage.controller.js";
 import { allStage } from "../../controllers/stageControllers/allStage.controller.js";
 import { selectedStage } from "../../controllers/stageControllers/selectedStage.controller.js";
+import { getUserResponses } from "../../controllers/userStageProgressController.js/getUserResponse.controller.js";
 import { reviewUserStage } from "../../controllers/stageControllers/reviewUserStage.controller.js";
+
+
+import { addGallery } from "../../controllers/galleryControllers/addGallery.controller.js";
+import { gallerysCreatedByAdmin } from "../../controllers/galleryControllers/gallerysCreatedByAdmin.controller.js";
+import { selectedGallery } from "../../controllers/galleryControllers/selectedGallery.controller.js";
+import galleryUpload from "../../utils/helper/multer/gallery.multer.js";
+import { updateGallery } from "../../controllers/galleryControllers/updateGallery.controller.js";
+import { deleteGallery } from "../../controllers/galleryControllers/deleteGallery.controller.js";
 
 const router = Router();
 
@@ -52,9 +63,9 @@ router.route("/stage/all").get(verifyAdminJWT, allStage);
 
 router.route("/stage/get/:stageId").get(verifyAdminJWT, selectedStage);
 
+router.route("/stage/userresponse").get(verifyAdminJWT, getUserResponses);
+
 router.route("/stage/approval").patch(verifyAdminJWT, reviewUserStage);
-
-
 
 /////////////////////////////////////////////////////////
 
@@ -82,7 +93,6 @@ router.route("/post/update").patch(
 
 router.route("/post/delete").delete(verifyAdminJWT, deletePost);
 
-
 /////////////////////////////////////////////////////////
 
 router.route("/gallery/add").post(
@@ -91,22 +101,22 @@ router.route("/gallery/add").post(
     { name: "image", maxCount: 5 }, //upload image file
     { name: "video", maxCount: 5 }, //upload video file
   ]),
-  addPost
+  addGallery
 );
 
-router.route("/post/all").get(verifyAdminJWT, postsCreatedByAdmin);
+router.route("/gallery/all").get(verifyAdminJWT, gallerysCreatedByAdmin);
 
-router.route("/post/get/:id").get(verifyAdminJWT, selectedPost);
+router.route("/gallery/get/:id").get(verifyAdminJWT, selectedGallery);
 
-router.route("/post/update").patch(
+router.route("/gallery/update").patch(
   verifyAdminJWT,
-  postUpload.fields([
+  galleryUpload.fields([
     { name: "image", maxCount: 5 }, //upload image file
     { name: "video", maxCount: 5 }, //upload video file
   ]),
-  updatePost
+  updateGallery
 );
 
-router.route("/post/delete").delete(verifyAdminJWT, deletePost);
+router.route("/gallery/delete").delete(verifyAdminJWT, deleteGallery);
 
 export default router;

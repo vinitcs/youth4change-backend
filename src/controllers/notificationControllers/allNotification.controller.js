@@ -1,5 +1,5 @@
 import { Notification } from "../../models/notification.model.js";
-import { Post } from "../../models/post.model.js";
+// import { Post } from "../../models/post.model.js";
 import { ApiResponse } from "../../utils/helper/ApiResponse.js";
 import { asyncHandler } from "../../utils/helper/AsyncHandler.js";
 
@@ -65,8 +65,7 @@ const allNotification = asyncHandler(async (req, res) => {
   const skip = (pageNum - 1) * limitNum;
 
   let notifications = await Notification.find({ sharedToUserId: userId })
-    .populate("sharedByUserId", "name nameTag avatar")
-    .select("-isBroadcast -sharedToUserId")
+    .select("-isBroadcast -sharedToUserId -contentId -contentType -isDeleted")
     .sort({ createdAt: -1 }) // Latest first
     .skip(skip)
     .limit(limitNum)
@@ -101,7 +100,7 @@ const allNotification = asyncHandler(async (req, res) => {
     new ApiResponse(
       200,
       {
-        notifications: allNotification,
+        notifications: notifications,
         // notifications: populatedNotifications,
       },
       `Successfully fetched notifications list.`

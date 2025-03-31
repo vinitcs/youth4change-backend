@@ -42,20 +42,19 @@ const sendOtp = asyncHandler(async (req, res) => {
     throw new ApiError(400, "Error while generating OTP !");
   }
 
-  
   const template = {
-    from: `"Youth 4 Change" <${process.env.SMTP_USER}>`, // sender address
+    from: process.env.SMTP_USER, // sender address
     to: email, // list of receivers
     subject: `Email verification ✔`, // Subject line
     text: "Email verification", // plain text body
     html: `<h1>Email verification otp: ${otp}</h1>`, // html body
-}
+  };
 
-const isOtpSendToMail = await sendEmail(template);
+  const isOtpSendToMail = await sendEmail(template);
 
-if (!isOtpSendToMail) {
-    throw new ApiError(404, "Email doesnt exist !")
-}
+  if (!isOtpSendToMail) {
+    throw new ApiError(404, "Email doesnt exist !");
+  }
 
   const otpRecord = await Otp.create({
     email: email,
@@ -67,7 +66,6 @@ if (!isOtpSendToMail) {
   }
 
   console.log("otp send via email");
-  
 
   return res
     .status(200)
