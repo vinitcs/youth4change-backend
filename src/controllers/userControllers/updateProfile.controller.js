@@ -107,7 +107,9 @@ const updateProfile = asyncHandler(async (req, res) => {
       cast: validatedData.cast?.trim() || user.cast,
       religion: validatedData.religion?.trim() || user.religion,
       bloodGroup: validatedData.bloodGroup?.trim() || user.bloodGroup,
-      phone: validatedData.phone?.trim() || user.phone,
+
+      phone:  validatedData.phone ? `+91${validatedData.phone.trim()}` : user.phone,
+      
       city: validatedData.city?.trim() || user.city,
       state: validatedData.state?.trim() || user.state,
       education: validatedData.education?.trim() || user.education,

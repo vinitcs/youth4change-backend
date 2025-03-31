@@ -82,4 +82,31 @@ router.route("/post/update").patch(
 
 router.route("/post/delete").delete(verifyAdminJWT, deletePost);
 
+
+/////////////////////////////////////////////////////////
+
+router.route("/gallery/add").post(
+  verifyAdminJWT,
+  postUpload.fields([
+    { name: "image", maxCount: 5 }, //upload image file
+    { name: "video", maxCount: 5 }, //upload video file
+  ]),
+  addPost
+);
+
+router.route("/post/all").get(verifyAdminJWT, postsCreatedByAdmin);
+
+router.route("/post/get/:id").get(verifyAdminJWT, selectedPost);
+
+router.route("/post/update").patch(
+  verifyAdminJWT,
+  postUpload.fields([
+    { name: "image", maxCount: 5 }, //upload image file
+    { name: "video", maxCount: 5 }, //upload video file
+  ]),
+  updatePost
+);
+
+router.route("/post/delete").delete(verifyAdminJWT, deletePost);
+
 export default router;

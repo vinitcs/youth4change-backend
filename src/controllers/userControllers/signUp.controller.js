@@ -55,7 +55,7 @@ const signUp = asyncHandler(async (req, res) => {
       cast: cast,
       religion: religion,
       bloodGroup: bloodGroup,
-      phone: phone,
+      phone: `+91${phone}`,
       city: city,
       state: state,
       education: education,

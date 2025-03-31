@@ -1,6 +1,6 @@
 import { model, Schema, Types } from "mongoose";
 
-const postSchema = new Schema(
+const gallerySchema = new Schema(
   {
     adminId: {
       type: Types.ObjectId,
@@ -14,15 +14,20 @@ const postSchema = new Schema(
       default: "",
     },
 
+    category: {
+      type: String,
+      trim: true,
+      default: "",
+    },
+
     media: [
       {
         url: { type: String, trim: true, default: "" }, // Store URL/path. If link, then url: ""
         type: {
           type: String,
-          enum: ["image", "video", "link"],
+          enum: ["image", "video"],
           default: "",
         },
-        link: { type: String, trim: true, default: "" }, // If media file provided, then link: ""
       },
     ],
   },
@@ -31,6 +36,6 @@ const postSchema = new Schema(
   }
 );
 
-postSchema.index({ adminId: 1 });
+gallerySchema.index({ adminId: 1 });
 
-export const Post = model("Post", postSchema);
+export const Gallery = model("Gallery", gallerySchema);
