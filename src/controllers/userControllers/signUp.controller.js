@@ -8,9 +8,10 @@ import { signUpUserValidationSchema } from "../../utils/helper/validations/userV
 
 const signUp = asyncHandler(async (req, res) => {
   try {
-    const { otp, ...validBody } = req.body; // Exclude otp from validation
-
+    // const { otp, ...validBody } = req.body; // Exclude otp from validation
     // console.log("...validBody", validBody);
+
+    const { userData } = req.body;
 
     const {
       name,
@@ -27,7 +28,7 @@ const signUp = asyncHandler(async (req, res) => {
       education,
       college,
       password,
-    } = await signUpUserValidationSchema.validateAsync(validBody);
+    } = await signUpUserValidationSchema.validateAsync(userData);
 
     // Check if user already exists
     const existedUser = await User.findOne({ email: email });

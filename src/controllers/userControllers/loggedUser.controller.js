@@ -13,7 +13,7 @@ const loggedUser = asyncHandler(async (req, res) => {
     new ApiResponse(
       200,
       {
-        user,
+        ...user,
       },
       "Logged user data retrieved successfully."
     )

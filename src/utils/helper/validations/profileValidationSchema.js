@@ -1,60 +1,64 @@
 import Joi from "joi";
 
 const userProfileDataValidationSchema = Joi.object({
-  name: Joi.string().min(3).max(100).optional().messages({
+  name: Joi.string().min(3).max(100).allow(null, "").optional().messages({
     "string.base": "Name must be a string.",
     "string.min": "Name must be at least 3 characters long.",
     "string.max": "Name must not exceed 100 characters.",
     // "string.empty": "Name is required.",
   }),
 
-  email: Joi.string().email().optional().messages({
+  email: Joi.string().email().allow(null, "").optional().messages({
     "string.email": "Please enter a valid email address.",
     // "string.empty": "Email is required.",
   }),
 
-  dob: Joi.string().optional().messages({
+  dob: Joi.string().allow(null, "").optional().messages({
     // "any.required": "DOB is required.",
   }),
 
-  age: Joi.number().optional().messages({
+  age: Joi.number().allow(null, "").optional().messages({
     // "any.required": "Age is required.",
   }),
 
-  gender: Joi.string().optional().messages({
+  gender: Joi.string().allow(null, "").optional().messages({
     // "any.required": "Gender is required.",
   }),
 
-  cast: Joi.string().optional().messages({
+  cast: Joi.string().allow(null, "").optional().messages({
     // "any.required": "Cast is required.",
   }),
 
-  religion: Joi.string().optional().messages({
+  religion: Joi.string().allow(null, "").optional().messages({
     // "any.required": "Religion is required.",
   }),
 
-  bloodGrup: Joi.string().optional().messages({
+  bloodGroup: Joi.string().allow(null, "").optional().messages({
     // "any.required": "Blood Group is required.",
   }),
 
-  phone: Joi.string().optional().messages({
+  phone: Joi.string().allow(null, "").optional().messages({
     // "any.required": "Phone is required.",
   }),
 
-  city: Joi.string().optional().messages({
+  city: Joi.string().allow(null, "").optional().messages({
     // "any.required": "City is required.",
   }),
 
-  state: Joi.string().optional().messages({
+  state: Joi.string().allow(null, "").optional().messages({
     // "any.required": "State is required.",
   }),
 
-  education: Joi.string().optional().messages({
+  education: Joi.string().allow(null, "").optional().messages({
     // "any.required": "Education is required.",
   }),
 
-  college: Joi.string().optional().messages({
+  college: Joi.string().allow(null, "").optional().messages({
     // "any.required": "College is required.",
+  }),
+
+  avatar: Joi.string().allow(null, "").optional().messages({
+    // "any.required": "Avatar is required.",
   }),
 });
 

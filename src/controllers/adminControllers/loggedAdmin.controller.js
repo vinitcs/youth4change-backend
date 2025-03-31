@@ -12,7 +12,7 @@ const loggedAdmin = asyncHandler(async (req, res) => {
     new ApiResponse(
       200,
       {
-        admin,
+        ...admin,
       },
       "Logged admin data retrieved successfully."
     )

@@ -57,8 +57,8 @@ const updateProfile = asyncHandler(async (req, res) => {
 
     const userId = req.user._id; // Access user _id from JWT
 
-    // Prepare updated data for fields that are allowed to be changed
-    const updatedData = { ...validatedData };
+    // // Prepare updated data for fields that are allowed to be changed
+    // const updatedData = { ...validatedData };
 
     const user = await User.findById({ _id: userId });
 
@@ -88,7 +88,7 @@ const updateProfile = asyncHandler(async (req, res) => {
     // Handle avatar file upload
     if (req.files && req.files.avatar) {
       const avatarPath = `/uploads/profile/avatars/${req.files?.avatar[0]?.filename}`;
-      updatedData.avatar = avatarPath; // Save image URL in avatar field
+      validatedData.avatar = avatarPath; // Save image URL in avatar field
 
       //Delete old avatar file from localstorage if exist
       if (user.avatar) {
@@ -96,6 +96,31 @@ const updateProfile = asyncHandler(async (req, res) => {
         await deleteFileIfExists(oldAvatarPath);
       }
     }
+
+    // Prepare final updatedData while checking for empty values
+    const updatedData = {
+      name: validatedData.name?.trim() || user.name,
+      email: validatedData.email?.trim() || user.email,
+      dob: validatedData.dob || user.dob,
+      age: validatedData.age || user.age,
+      gender: validatedData.gender?.trim() || user.gender,
+      cast: validatedData.cast?.trim() || user.cast,
+      religion: validatedData.religion?.trim() || user.religion,
+      bloodGroup: validatedData.bloodGroup?.trim() || user.bloodGroup,
+      phone: validatedData.phone?.trim() || user.phone,
+      city: validatedData.city?.trim() || user.city,
+      state: validatedData.state?.trim() || user.state,
+      education: validatedData.education?.trim() || user.education,
+      college: validatedData.college?.trim() || user.college,
+      avatar: validatedData.avatar || user.avatar, // Ensure avatar is retained
+    };
+
+    // Remove undefined or empty values (ensuring no accidental overrides)
+    Object.keys(updatedData).forEach((key) => {
+      if (updatedData[key] === "" || updatedData[key] === null) {
+        updatedData[key] = user[key]; // Retain previous value
+      }
+    });
 
     // update user profile
     const updatedUser = await User.findByIdAndUpdate(
