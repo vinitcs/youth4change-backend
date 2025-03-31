@@ -29,7 +29,7 @@ const allGallery = asyncHandler(async (req, res) => {
       {
         gallerys: allGalleryData,
       },
-      `Successfully fetched gallerys.`
+      `Successfully fetched galleries.`
     )
   );
 });

@@ -97,7 +97,7 @@ router.route("/post/delete").delete(verifyAdminJWT, deletePost);
 
 router.route("/gallery/add").post(
   verifyAdminJWT,
-  postUpload.fields([
+  galleryUpload.fields([
     { name: "image", maxCount: 5 }, //upload image file
     { name: "video", maxCount: 5 }, //upload video file
   ]),

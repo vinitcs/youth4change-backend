@@ -1,13 +1,9 @@
 import Joi from "joi";
 
 const addGalleryValidationSchema = Joi.object({
-  description: Joi.string().min(10).max(250).allow("").optional().messages({
-    "string.min":
-      "Description must be at least 10 characters long (if provided).",
-    "string.max": "Description must not exceed 250 characters.",
-  }),
+  description: Joi.string().allow("").optional(),
 
-  category: Joi.string().optional(),
+  category: Joi.string().allow("").optional(),
 
   image: Joi.any().optional(),
   video: Joi.any().optional(),
