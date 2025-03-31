@@ -4,18 +4,13 @@ import bcrypt from "bcryptjs";
 
 const userSchema = new Schema(
   {
-    fname: {
+    name: {
       type: String,
       index: true,
       trim: true,
       default: "",
     },
-    lname: {
-      type: String,
-      index: true,
-      trim: true,
-      default: "",
-    },
+
     email: {
       type: String,
       unique: true,
@@ -23,30 +18,81 @@ const userSchema = new Schema(
       lowercase: true,
       trim: true,
     },
+
+    dob: {
+      type: Date,
+      required: true,
+    },
+
+    age: {
+      type: Number,
+      requied: true,
+    },
+
+    gender: {
+      type: String,
+      required: true,
+    },
+
+    cast: {
+      type: String,
+      required: true,
+    },
+
+    religion: {
+      type: String,
+      reuired: true,
+    },
+
+    bloodGroup: {
+      type: String,
+      required: true,
+    },
+
+    phone: {
+      type: String,
+      required: true,
+    },
+
+    city: {
+      type: String,
+      required: true,
+    },
+
+    state: {
+      type: String,
+      required: true,
+    },
+
+    education: {
+      type: String,
+      required: true,
+    },
+
+    college: {
+      type: String,
+      required: true,
+    },
+
     password: {
       type: String,
       required: [true, "Please enter user password"],
       trim: true,
     },
+
     avatar: {
       // Profile Img URl
       type: String,
       trim: true,
       default: "",
     },
+
     bio: {
       type: String,
       trim: true,
       default: "",
     },
-    dob: {
-      type: Date,
-      default: null,
-    },
-    // experienceYears: {
-    //   type: Number,
-    //   required: true,
-    // }, // User's experience in years
+
     refreshToken: {
       type: String, // Refresh token is stored securely
       default: null,

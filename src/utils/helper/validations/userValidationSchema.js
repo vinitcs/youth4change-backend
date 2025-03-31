@@ -20,23 +20,60 @@ const verifyOtpValidationSchema = Joi.object({
 
 // During signUp/ register
 const signUpUserValidationSchema = Joi.object({
-  fname: Joi.string().min(3).max(100).required().messages({
-    "string.base": "First name must be a string.",
-    "string.min": "First name must be at least 3 characters long.",
-    "string.max": "First name must not exceed 100 characters.",
-    "any.required": "First name is required.",
-  }),
-
-  lname: Joi.string().min(3).max(100).required().messages({
-    "string.base": "Last name must be a string.",
-    "string.min": "Last name must be at least 3 characters long.",
-    "string.max": "Last name must not exceed 100 characters.",
-    "any.required": "Last name is required.",
+  name: Joi.string().min(3).max(100).required().messages({
+    "string.base": "Name must be a string.",
+    "string.min": "Name must be at least 3 characters long.",
+    "string.max": "Name must not exceed 100 characters.",
+    "any.required": "Name is required.",
   }),
 
   email: Joi.string().email().required().messages({
     "string.email": "Please enter a valid email address.",
     "any.required": "Email is required.",
+  }),
+
+  dob: Joi.string().required().messages({
+    "any.required": "DOB is required.",
+  }),
+
+  age: Joi.number().required().messages({
+    "any.required": "Age is required.",
+  }),
+
+  gender: Joi.string().required().messages({
+    "any.required": "Gender is required.",
+  }),
+
+  cast: Joi.string().required().messages({
+    "any.required": "Cast is required.",
+  }),
+
+  religion: Joi.string().required().messages({
+    "any.required": "Religion is required.",
+  }),
+
+  bloodGroup: Joi.string().required().messages({
+    "any.required": "Blood Group is required.",
+  }),
+
+  phone: Joi.string().required().messages({
+    "any.required": "Phone is required.",
+  }),
+
+  city: Joi.string().required().messages({
+    "any.required": "City is required.",
+  }),
+
+  state: Joi.string().required().messages({
+    "any.required": "State is required.",
+  }),
+
+  education: Joi.string().required().messages({
+    "any.required": "Education is required.",
+  }),
+
+  college: Joi.string().required().messages({
+    "any.required": "College is required.",
   }),
 
   password: Joi.string().required(),
@@ -57,28 +94,3 @@ export {
   signUpUserValidationSchema,
   loginUserValidationSchema,
 };
-
-//
-//
-//
-//
-//
-//
-//
-
-// countryCode: Joi.string()
-//     .pattern(/^\+\d{1,4}$/) // Matches "+1", "+91", "+44", etc.
-//     .required()
-//     .messages({
-//       "string.pattern.base":
-//         "Country code must be a valid international dialing code (e.g., +1, +91).",
-//       "string.empty": "Country code is required.",
-//     }),
-
-// phone: Joi.string()
-//   // .pattern(/^(?:\+1\s?)?\(?[2-9]\d{2}\)?[-.\s]?[2-9]\d{2}[-.\s]?\d{4}$/)
-//   .optional(),
-// // .messages({
-// // "string.pattern.base": "Phone number must be a valid US phone number.",
-// // "string.empty": "Phone number is required.",
-// // })

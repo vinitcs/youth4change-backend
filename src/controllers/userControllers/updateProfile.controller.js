@@ -22,14 +22,6 @@ const deleteFileIfExists = async (filePath) => {
 
 const deleteUploadedFiles = async (req) => {
   if (req.files) {
-    // Delete uploaded file if if invalid JSON
-
-    // const uploadedFilePath = path.join(
-    //   "./public/uploads/avatars",
-    //   req.file.filename
-    // );
-    // await deleteFileIfExists(uploadedFilePath);
-
     const uploadedFiles = [];
 
     if (req.files.avatar) {
@@ -56,45 +48,8 @@ const deleteUploadedFiles = async (req) => {
   }
 };
 
-const generateUniqueUserTag = async (name, userId = null) => {
-  const nameParts = name.toLowerCase().split(" ").filter(Boolean);
-  let baseUserTag =
-    nameParts[0] +
-    (nameParts.length > 1 ? nameParts[nameParts.length - 1] : "");
-
-  let uniqueUserTag = `@${baseUserTag}`;
-  let counter = 1;
-
-  while (await User.findOne({ nameTag: uniqueUserTag, _id: { $ne: userId } })) {
-    if (nameParts.length > 2 && counter === 1) {
-      // Include middle name only if first-last combo already exists
-      uniqueUserTag = `@${nameParts[0] + nameParts[1] + nameParts[2]}`;
-    } else {
-      uniqueUserTag = `@${baseUserTag}${counter}`;
-    }
-    counter++;
-  }
-
-  return uniqueUserTag;
-};
-
 const updateProfile = asyncHandler(async (req, res) => {
   try {
-    if (req.body.interest) {
-      try {
-        // Parse the interest field if it's sent as JSON string in form-data
-        req.body.interest = JSON.parse(req.body.interest);
-      } catch (error) {
-        await deleteUploadedFiles(req);
-
-        // throw new ApiError(400, "Invalid JSON format for interest field.");
-        return res.status(400).json(
-          // new ApiResponse(400, {}, "Invalid JSON format for interest field.")
-          new ApiResponse(400, {}, "Error parsing interest data.")
-        );
-      }
-    }
-
     const validatedData = await userProfileDataValidationSchema.validateAsync(
       req.body,
       { abortEarly: false }
@@ -113,7 +68,6 @@ const updateProfile = asyncHandler(async (req, res) => {
       return res.status(404).json(new ApiResponse(404, {}, "User not found."));
     }
 
-   
     // Check email is already used by another user
     if (validatedData.email) {
       const existingUser = await User.findOne({ email: validatedData.email });
@@ -131,12 +85,6 @@ const updateProfile = asyncHandler(async (req, res) => {
           );
       }
     }
-
-    // Exclude badge, eventOrganized, and donationAmount from updates
-    delete updatedData.badge;
-    delete updatedData.eventOrganized;
-    delete updatedData.donationAmount;
-
     // Handle avatar file upload
     if (req.files && req.files.avatar) {
       const avatarPath = `/uploads/profile/avatars/${req.files?.avatar[0]?.filename}`;
@@ -147,26 +95,6 @@ const updateProfile = asyncHandler(async (req, res) => {
         const oldAvatarPath = path.join("./public", `${user.avatar}`);
         await deleteFileIfExists(oldAvatarPath);
       }
-    }
-
-    // Handle banner file upload
-    if (req.files && req.files.banner) {
-      const bannerPath = `/uploads/profile/banners/${req.files?.banner[0]?.filename}`;
-      updatedData.banner = bannerPath;
-
-      // Delete old banner if it exists
-      if (user.banner) {
-        const oldBannerPath = path.join("./public", user.banner);
-        await deleteFileIfExists(oldBannerPath);
-      }
-    }
-
-    //Handle nameTag update if the name is changed.
-    if (validatedData.name && validatedData.name !== user.name) {
-      updatedData.nameTag = await generateUniqueUserTag(
-        validatedData.name,
-        userId
-      );
     }
 
     // update user profile

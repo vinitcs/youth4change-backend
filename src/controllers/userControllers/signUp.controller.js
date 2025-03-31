@@ -12,8 +12,22 @@ const signUp = asyncHandler(async (req, res) => {
 
     // console.log("...validBody", validBody);
 
-    const { fname, lname, email, password } =
-      await signUpUserValidationSchema.validateAsync(validBody);
+    const {
+      name,
+      email,
+      dob,
+      age,
+      gender,
+      cast,
+      religion,
+      bloodGroup,
+      phone,
+      city,
+      state,
+      education,
+      college,
+      password,
+    } = await signUpUserValidationSchema.validateAsync(validBody);
 
     // Check if user already exists
     const existedUser = await User.findOne({ email: email });
@@ -32,9 +46,19 @@ const signUp = asyncHandler(async (req, res) => {
 
     // Create user
     const user = await User.create({
-      fname: fname,
-      lname: lname,
+      name: name,
       email: email,
+      dob: dob,
+      age: age,
+      gender: gender,
+      cast: cast,
+      religion: religion,
+      bloodGroup: bloodGroup,
+      phone: phone,
+      city: city,
+      state: state,
+      education: education,
+      college: college,
       password: password,
     });
 
