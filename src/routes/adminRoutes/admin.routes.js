@@ -75,7 +75,7 @@ router.route("/stage/approval").patch(verifyAdminJWT, reviewUserStage);
 
 router.route("/post/add").post(
   verifyAdminJWT,
-  postUpload.array("media", 5),
+  postUpload.array("image", 5),
   addPost
 );
 
