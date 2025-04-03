@@ -4,17 +4,18 @@ import fs from "fs";
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    const baseDir = "./public/uploads/gallery";
+    const baseDir = "./public/uploads/user/achievement/certificate";
 
-    // const uploadDir = "./public/uploads/gallery";
+    // const uploadDir = "./public/uploads/user/achievement/certificate";
     let uploadDir;
 
     if (file.mimetype.startsWith("image/")) {
       uploadDir = `${baseDir}/images`;
-    } 
-    else if (file.mimetype.startsWith("video/")) {
-      uploadDir = `${baseDir}/videos`;
-    } else {
+    }
+    //  else if (file.mimetype.startsWith("video/")) {
+    //   uploadDir = `${baseDir}/videos`;
+    // }
+    else {
       return cb(
         new Error("Invalid file type! Only image and video files are allowed.")
       );
@@ -36,22 +37,25 @@ const storage = multer.diskStorage({
 // // multer to handle in-memory file upload
 // const storage = multer.memoryStorage();
 
-const galleryUpload = multer({
+const userAchievementCertificateUpload = multer({
   storage: storage,
   limits: { fileSize: 30 * 1024 * 1024 }, // Limit to 30MB per file
   fileFilter: (req, file, cb) => {
     const imageTypes = /jpeg|jpg|png/;
-    const videoTypes = /mp4|avi|mov|mkv|flv/;
+    // const videoTypes = /mp4|avi|mov|mkv|flv/;
 
     const isImage =
       imageTypes.test(path.extname(file.originalname).toLowerCase()) &&
       imageTypes.test(file.mimetype);
 
-    const isVideo =
-      videoTypes.test(path.extname(file.originalname).toLowerCase()) &&
-      videoTypes.test(file.mimetype);
+    // const isVideo =
+    //   videoTypes.test(path.extname(file.originalname).toLowerCase()) &&
+    //   videoTypes.test(file.mimetype);
 
-    if (isImage || isVideo) {
+    if (
+      isImage
+      // || isVideo
+    ) {
       return cb(null, true); // Allow the file
     }
 
@@ -59,4 +63,4 @@ const galleryUpload = multer({
   },
 });
 
-export default galleryUpload;
+export default userAchievementCertificateUpload;

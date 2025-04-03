@@ -23,13 +23,16 @@ import { selectedStage } from "../../controllers/stageControllers/selectedStage.
 import { getUserResponses } from "../../controllers/userStageProgressController.js/getUserResponse.controller.js";
 import { reviewUserStage } from "../../controllers/stageControllers/reviewUserStage.controller.js";
 
-
 import { addGallery } from "../../controllers/galleryControllers/addGallery.controller.js";
 import { gallerysCreatedByAdmin } from "../../controllers/galleryControllers/gallerysCreatedByAdmin.controller.js";
 import { selectedGallery } from "../../controllers/galleryControllers/selectedGallery.controller.js";
 import galleryUpload from "../../utils/helper/multer/gallery.multer.js";
 import { updateGallery } from "../../controllers/galleryControllers/updateGallery.controller.js";
 import { deleteGallery } from "../../controllers/galleryControllers/deleteGallery.controller.js";
+
+import userAchievementCertificateUpload from "../../utils/helper/multer/userAchievementCertificate.multer.js";
+import { addCertificateFromAdminSide } from "../../controllers/userAchievementControllers/addCertificateFromAdminSide.controller.js";
+import { deleteCertificateFromAdminSide } from "../../controllers/userAchievementControllers/deleteCertificateFromAdminSide.controller.js";
 
 const router = Router();
 
@@ -69,14 +72,13 @@ router.route("/stage/approval").patch(verifyAdminJWT, reviewUserStage);
 
 /////////////////////////////////////////////////////////
 
+
 router.route("/post/add").post(
   verifyAdminJWT,
-  postUpload.fields([
-    { name: "image", maxCount: 5 }, //upload image file
-    { name: "video", maxCount: 5 }, //upload video file
-  ]),
+  postUpload.array("media", 5),
   addPost
 );
+
 
 router.route("/post/all").get(verifyAdminJWT, postsCreatedByAdmin);
 
@@ -118,5 +120,20 @@ router.route("/gallery/update").patch(
 );
 
 router.route("/gallery/delete").delete(verifyAdminJWT, deleteGallery);
+
+/////////////////////////////////////////////////////////
+
+router.route("/user/achievement/certificate/add").post(
+  verifyAdminJWT,
+  userAchievementCertificateUpload.fields([
+    { name: "image", maxCount: 5 }, //upload image file
+    // { name: "video", maxCount: 5 }, //upload video file
+  ]),
+  addCertificateFromAdminSide
+);
+
+router
+  .route("/user/achievement/certificate/delete")
+  .delete(verifyAdminJWT, deleteCertificateFromAdminSide);
 
 export default router;
