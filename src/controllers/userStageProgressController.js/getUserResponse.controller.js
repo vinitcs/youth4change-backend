@@ -97,27 +97,29 @@ const getUserResponses = asyncHandler(async (req, res) => {
   const responses = await UserStageProgress.aggregate(aggregationPipeline);
 
   // **Get Total Count**
-  // const totalCount = await UserStageProgress.countDocuments(
-  //   status ? { status } : {}
-  // );
+  const totalCount = await UserStageProgress.countDocuments();
 
   if (!responses.length) {
     const message =
-      pageNum === 1
-        ? `No responses.`
-        : `No more responses available.`;
+      pageNum === 1 ? `No responses.` : `No more responses available.`;
     return res
       .status(200)
-      .json(new ApiResponse(200, { responses: [] }, message));
+      .json(
+        new ApiResponse(
+          200,
+          { total: totalCount, page: pageNum, limit: limitNum, responses: [] },
+          message
+        )
+      );
   }
 
   return res.status(200).json(
     new ApiResponse(
       200,
       {
-        // total: totalCount,
-        // page: pageNum,
-        // limit: limitNum,
+        total: totalCount,
+        page: pageNum,
+        limit: limitNum,
         responses,
       },
       "User responses fetched successfully."
