@@ -4,15 +4,14 @@ import fs from "fs";
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    const baseDir = "./public/uploads/gallery";
+    const baseDir = "./public/uploads/post";
 
-    // const uploadDir = "./public/uploads/gallery";
+    // const uploadDir = "./public/uploads/post";
     let uploadDir;
 
     if (file.mimetype.startsWith("image/")) {
       uploadDir = `${baseDir}/images`;
-    } 
-    else if (file.mimetype.startsWith("video/")) {
+    } else if (file.mimetype.startsWith("video/")) {
       uploadDir = `${baseDir}/videos`;
     } else {
       return cb(
@@ -38,20 +37,26 @@ const storage = multer.diskStorage({
 
 const galleryUpload = multer({
   storage: storage,
-  limits: { fileSize: 30 * 1024 * 1024 }, // Limit to 30MB per file
+  limits: { fileSize: 200 * 1024 * 1024 }, // Limit to 30MB per file
   fileFilter: (req, file, cb) => {
-    const imageTypes = /jpeg|jpg|png/;
-    const videoTypes = /mp4|avi|mov|mkv|flv/;
+    const imageTypes = /jpeg|jpg|png|mp4|avi|mov/;
+    // const videoTypes = /mp4|avi|mov|mkv|flv/;
 
     const isImage =
       imageTypes.test(path.extname(file.originalname).toLowerCase()) &&
       imageTypes.test(file.mimetype);
 
-    const isVideo =
-      videoTypes.test(path.extname(file.originalname).toLowerCase()) &&
-      videoTypes.test(file.mimetype);
+    // const isVideo =
+    //   videoTypes.test(path.extname(file.originalname).toLowerCase()) &&
+    //   videoTypes.test(file.mimetype);
 
-    if (isImage || isVideo) {
+    if (
+      isImage
+      //  ||
+      // isVideo
+    ) {
+      console.log(file);
+
       return cb(null, true); // Allow the file
     }
 

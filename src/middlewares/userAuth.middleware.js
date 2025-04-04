@@ -50,6 +50,8 @@ const verifyJWT = asyncHandler(async (req, res, next) => {
 
     req.user = user; // add to req.user giving access of user for loggedUser and profileProgress.
 
+    console.log("hi");
+    
     next();
   } catch (error) {
     if (error.name === "TokenExpiredError") {

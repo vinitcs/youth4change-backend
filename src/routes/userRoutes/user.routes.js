@@ -19,14 +19,15 @@ import profileUpload from "../../utils/helper/multer/profile.multer.js";
 
 import { refreshAccessToken } from "../../controllers/userControllers/refreshAccessToken.controller.js";
 import { searchUser } from "../../controllers/userControllers/searchUser.controller.js";
+import { updateAvatar } from "../../controllers/userControllers/updateAvatar.controller.js";
 
 const router = Router();
 
 router.route("/send/otp").post(sendOtp);
 
-router.route("/verify/otp").post(verifyOtp)
+router.route("/verify/otp").post(verifyOtp);
 
-router.route("/signup").post( signUp);
+router.route("/signup").post(signUp);
 
 // router.route("/login").post(loginRateLimiter, login); // add loginRateLimiter to try avoid brute force attack on phone number
 router.route("/login").post(login); // add later loginRateLimiter to try avoid brute force attack on phone number
@@ -42,14 +43,11 @@ router.route("/logout").post(verifyJWT, logout);
 //   .route("/profile/update")
 //   .patch(verifyJWT, avatarUpload.single("avatar"), updateProfile);
 
-router.route("/profile/update").patch(
-  verifyJWT,
-  profileUpload.fields([
-    { name: "avatar", maxCount: 1 }, //upload avatar file
-    { name: "banner", maxCount: 1 }, //upload banner file
-  ]),
-  updateProfile
-);
+router
+  .route("/profile/update/avatar")
+  .patch(verifyJWT, profileUpload.single("avatar"), updateAvatar);
+
+router.route("/profile/update").patch(verifyJWT, updateProfile);
 
 // router.route("/selected/:id").get(verifyJWT, selectedUserData);
 

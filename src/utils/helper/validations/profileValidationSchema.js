@@ -56,10 +56,6 @@ const userProfileDataValidationSchema = Joi.object({
   college: Joi.string().allow(null, "").optional().messages({
     // "any.required": "College is required.",
   }),
-
-  avatar: Joi.string().allow(null, "").optional().messages({
-    // "any.required": "Avatar is required.",
-  }),
 });
 
 export { userProfileDataValidationSchema };

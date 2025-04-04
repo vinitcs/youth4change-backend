@@ -7,11 +7,9 @@ const storage = multer.diskStorage({
     // const uploadDir = "./public/uploads/profile";
     let uploadDir;
 
-    if (file.fieldname === "avatar") {
+    if (file.mimetype.startsWith("image/")) {
       uploadDir = "./public/uploads/profile/avatars";
-    } else if (file.fieldname === "banner") {
-      uploadDir = "./public/uploads/profile/banners";
-    }
+    } 
 
     if (!fs.existsSync(uploadDir)) {
       fs.mkdirSync(uploadDir, { recursive: true });
@@ -29,7 +27,7 @@ const storage = multer.diskStorage({
 
 const profileUpload = multer({
   storage: storage,
-  limits: { fileSize: 10 * 1024 * 1024 }, // Limit to 10MB per file
+  // limits: { fileSize: 10 * 1024 * 1024 }, // Limit to 10MB per file
   fileFilter: (req, file, cb) => {
     const fileTypes = /jpeg|jpg|png/;
     const extname = fileTypes.test(

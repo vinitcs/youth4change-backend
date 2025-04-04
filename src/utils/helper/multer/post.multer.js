@@ -11,11 +11,9 @@ const storage = multer.diskStorage({
 
     if (file.mimetype.startsWith("image/")) {
       uploadDir = `${baseDir}/images`;
-    }
-    //  else if (file.mimetype.startsWith("video/")) {
-    //   uploadDir = `${baseDir}/videos`;
-    // }
-    else {
+    } else if (file.mimetype.startsWith("video/")) {
+      uploadDir = `${baseDir}/videos`;
+    } else {
       return cb(
         new Error("Invalid file type! Only image and video files are allowed.")
       );
@@ -39,9 +37,9 @@ const storage = multer.diskStorage({
 
 const postUpload = multer({
   storage: storage,
-  limits: { fileSize: 30 * 1024 * 1024 }, // Limit to 30MB per file
+  limits: { fileSize: 200 * 1024 * 1024 }, // Limit to 30MB per file
   fileFilter: (req, file, cb) => {
-    const imageTypes = /jpeg|jpg|png/;
+    const imageTypes = /jpeg|jpg|png|mp4|avi|mov/;
     // const videoTypes = /mp4|avi|mov|mkv|flv/;
 
     const isImage =
