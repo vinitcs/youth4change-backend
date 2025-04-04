@@ -104,8 +104,8 @@ const getUserResponses = asyncHandler(async (req, res) => {
   if (!responses.length) {
     const message =
       pageNum === 1
-        ? `No responses found matching.`
-        : `No more responses available matching.`;
+        ? `No responses.`
+        : `No more responses available.`;
     return res
       .status(200)
       .json(new ApiResponse(200, { responses: [] }, message));
