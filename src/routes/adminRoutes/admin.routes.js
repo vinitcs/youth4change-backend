@@ -18,6 +18,7 @@ import { deletePost } from "../../controllers/postControllers/deletePost.control
 import { postsCreatedByAdmin } from "../../controllers/postControllers/postsCreatedByAdmin.controller.js";
 
 import { createStage } from "../../controllers/stageControllers/createStage.controller.js";
+import { updateStage } from "../../controllers/stageControllers/updateStage.controller.js";
 import { allStage } from "../../controllers/stageControllers/allStage.controller.js";
 import { selectedStage } from "../../controllers/stageControllers/selectedStage.controller.js";
 import { getUserResponses } from "../../controllers/userStageProgressController.js/getUserResponse.controller.js";
@@ -61,6 +62,8 @@ router.route("/report/:id").get(verifyAdminJWT, selectedReport);
 // Stages CRUD
 
 router.route("/stage/create").post(verifyAdminJWT, createStage);
+
+router.route("/stage/update/:stageId").patch(verifyAdminJWT,updateStage)
 
 router.route("/stage/all").get(verifyAdminJWT, allStage);
 
