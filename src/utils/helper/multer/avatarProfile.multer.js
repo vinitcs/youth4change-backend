@@ -25,7 +25,7 @@ const storage = multer.diskStorage({
 // // multer to handle in-memory file upload
 // const storage = multer.memoryStorage();
 
-const profileUpload = multer({
+const avatarProfileUpload = multer({
   storage: storage,
   // limits: { fileSize: 10 * 1024 * 1024 }, // Limit to 10MB per file
   fileFilter: (req, file, cb) => {
@@ -42,4 +42,4 @@ const profileUpload = multer({
   },
 });
 
-export default profileUpload;
+export default avatarProfileUpload;

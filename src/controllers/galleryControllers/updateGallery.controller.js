@@ -24,28 +24,15 @@ const deleteFileIfExists = async (filePath) => {
 };
 
 const deleteUploadedFiles = async (req) => {
-  if (req.files) {
-    const uploadedFiles = [];
-
-    if (req.files.image) {
-      req.files?.image?.forEach((file) => {
-        uploadedFiles.push(`./public/uploads/gallery/images/${file.filename}`);
-      });
-    }
-
-    if (req.files.video) {
-      req.files?.video?.forEach((file) => {
-        uploadedFiles.push(`./public/uploads/gallery/videos/${file.filename}`);
-      });
-    }
-
-    for (const file of uploadedFiles) {
+  if (req.files && Array.isArray(req.files)) {
+    for (const file of req.files) {
+      const filePath = `./public/uploads/gallery/${file.mimetype.startsWith("image/") ? "images" : "videos"}/${file.filename}`;
       try {
-        await deleteFileIfExists(file);
+        await deleteFileIfExists(filePath);
       } catch (error) {
         throw new ApiError(
           500,
-          `Failed to delete file: ${file} and error ${error.message}`
+          `Failed to delete file: ${filePath}, Error: ${error.message}`
         );
       }
     }
@@ -122,23 +109,23 @@ const updateGallery = asyncHandler(async (req, res) => {
 
     // 2. Add New Media Files
     if (req.files) {
-      if (req.files.image) {
-        req.files?.image?.forEach((file) => {
-          updatedMedia.push({
-            url: `/uploads/gallery/images/${file.filename}`,
-            type: "image",
-          });
-        });
-      }
+      console.log("gallery files", req.files);
 
-      if (req.files.video) {
-        req.files?.video?.forEach((file) => {
-          updatedMedia.push({
-            url: `/uploads/gallery/videos/${file.filename}`,
-            type: "video",
-          });
+      req.files?.forEach((file) => {
+        updatedMedia.push({
+          url: file.mimetype.startsWith("image/")
+            ? `/uploads/gallery/images/${file.filename}`
+            : file.mimetype.startsWith("video/")
+              ? `/uploads/gallery/videos/${file.filename}`
+              : "",
+
+          type: file.mimetype.startsWith("image/")
+            ? `image`
+            : file.mimetype.startsWith("video/")
+              ? `video`
+              : "",
         });
-      }
+      });
     }
 
     // 5. Update Gallery in Database

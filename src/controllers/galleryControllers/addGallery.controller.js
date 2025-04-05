@@ -14,37 +14,21 @@ const deleteFileIfExists = async (filePath) => {
     if (error.code !== "ENOENT") {
       console.error(`Error deleting gallery file: ${filePath}`, error.message);
     }
-    // throw new ApiError(
-    //   500,
-    //   `Error deleting gallery file: ${error.message}`
-    // );
 
     return false; // File did not exist or could not be deleted
   }
 };
 
 const deleteUploadedFiles = async (req) => {
-  if (req.files) {
-    const uploadedFiles = [];
-
-    if (req.files.image) {
-      req.files?.image?.forEach((file) => {
-        uploadedFiles.push(`./public/uploads/gallery/images/${file.filename}`);
-      });
-    }
-
-    if (req.files.video) {
-      req.files?.video?.forEach((file) => {
-        uploadedFiles.push(`./public/uploads/gallery/videos/${file.filename}`);
-      });
-    }
-    for (const file of uploadedFiles) {
+  if (req.files && Array.isArray(req.files)) {
+    for (const file of req.files) {
+      const filePath = `./public/uploads/gallery/${file.mimetype.startsWith("image/") ? "images" : "videos"}/${file.filename}`;
       try {
-        await deleteFileIfExists(file);
+        await deleteFileIfExists(filePath);
       } catch (error) {
         throw new ApiError(
           500,
-          `Failed to delete file: ${file} and error ${error.message}`
+          `Failed to delete file: ${filePath}, Error: ${error.message}`
         );
       }
     }
@@ -73,23 +57,23 @@ const addGallery = asyncHandler(async (req, res) => {
     let mediaArray = [];
 
     if (req.files) {
-      if (req.files.image) {
-        req.files?.image?.forEach((file) => {
-          mediaArray.push({
-            url: `/uploads/gallery/images/${file.filename}`,
-            type: "image",
-          });
-        });
-      }
+      console.log("gallery files", req.files);
 
-      if (req.files.video) {
-        req.files?.video?.forEach((file) => {
-          mediaArray.push({
-            url: `/uploads/gallery/videos/${file.filename}`,
-            type: "video",
-          });
+      req.files?.forEach((file) => {
+        mediaArray.push({
+          url: file.mimetype.startsWith("image/")
+            ? `/uploads/gallery/images/${file.filename}`
+            : file.mimetype.startsWith("video/")
+              ? `/uploads/gallery/videos/${file.filename}`
+              : "",
+
+          type: file.mimetype.startsWith("image/")
+            ? `image`
+            : file.mimetype.startsWith("video/")
+              ? `video`
+              : "",
         });
-      }
+      });
     }
 
     // Create gallery
@@ -114,7 +98,7 @@ const addGallery = asyncHandler(async (req, res) => {
         new ApiResponse(
           201,
           { Gallery: createdGallery },
-          "Gallery post created successfully."
+          "Gallery created successfully."
         )
       );
   } catch (error) {

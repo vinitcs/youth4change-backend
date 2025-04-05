@@ -24,28 +24,15 @@ const deleteFileIfExists = async (filePath) => {
 };
 
 const deleteUploadedFiles = async (req) => {
-  if (req.files) {
-    const uploadedFiles = [];
-
-    if (req.files.image) {
-      req.files?.image?.forEach((file) => {
-        uploadedFiles.push(`./public/uploads/post/images/${file.filename}`);
-      });
-    }
-
-    if (req.files.video) {
-      req.files?.video?.forEach((file) => {
-        uploadedFiles.push(`./public/uploads/post/videos/${file.filename}`);
-      });
-    }
-
-    for (const file of uploadedFiles) {
+  if (req.files && Array.isArray(req.files)) {
+    for (const file of req.files) {
+      const filePath = `./public/uploads/post/${file.mimetype.startsWith("image/") ? "images" : "videos"}/${file.filename}`;
       try {
-        await deleteFileIfExists(file);
+        await deleteFileIfExists(filePath);
       } catch (error) {
         throw new ApiError(
           500,
-          `Failed to delete file: ${file} and error ${error.message}`
+          `Failed to delete file: ${filePath}, Error: ${error.message}`
         );
       }
     }
@@ -120,25 +107,25 @@ const updatePost = asyncHandler(async (req, res) => {
 
     // 2. Add New Media Files
     if (req.files) {
-      if (req.files.image) {
-        req.files?.image?.forEach((file) => {
-          updatedMedia.push({
-            url: `/uploads/post/images/${file.filename}`,
-            type: "image",
-            link: "",
-          });
-        });
-      }
+      console.log("post files", req.files);
 
-      if (req.files.video) {
-        req.files?.video?.forEach((file) => {
-          updatedMedia.push({
-            url: `/uploads/post/videos/${file.filename}`,
-            type: "video",
-            link: "",
-          });
+      req.files?.forEach((file) => {
+        updatedMedia.push({
+          url: file.mimetype.startsWith("image/")
+            ? `/uploads/post/images/${file.filename}`
+            : file.mimetype.startsWith("video/")
+              ? `/uploads/post/videos/${file.filename}`
+              : "",
+
+          type: file.mimetype.startsWith("image/")
+            ? `image`
+            : file.mimetype.startsWith("video/")
+              ? `video`
+              : "",
+
+          link: "",
         });
-      }
+      });
     }
 
     // 3. update link with new updated link

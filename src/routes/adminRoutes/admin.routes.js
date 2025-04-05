@@ -72,65 +72,45 @@ router.route("/stage/approval").patch(verifyAdminJWT, reviewUserStage);
 
 /////////////////////////////////////////////////////////
 
-
-router.route("/post/add").post(
-  verifyAdminJWT,
-  postUpload.array("image", 5),
-  addPost
-);
-
+router
+  .route("/post/add")
+  .post(verifyAdminJWT, postUpload.array("image", 5), addPost);
 
 router.route("/post/all").get(verifyAdminJWT, postsCreatedByAdmin);
 
 router.route("/post/get/:id").get(verifyAdminJWT, selectedPost);
 
-router.route("/post/update").patch(
-  verifyAdminJWT,
-  postUpload.fields([
-    { name: "image", maxCount: 5 }, //upload image file
-    { name: "video", maxCount: 5 }, //upload video file
-  ]),
-  updatePost
-);
+router
+  .route("/post/update")
+  .patch(verifyAdminJWT, postUpload.array("image", 5), updatePost);
 
 router.route("/post/delete").delete(verifyAdminJWT, deletePost);
 
 /////////////////////////////////////////////////////////
 
-router.route("/gallery/add").post(
-  verifyAdminJWT,
-  galleryUpload.fields([
-    { name: "image", maxCount: 5 }, //upload image file
-    { name: "video", maxCount: 5 }, //upload video file
-  ]),
-  addGallery
-);
+router
+  .route("/gallery/add")
+  .post(verifyAdminJWT, galleryUpload.array("image", 5), addGallery);
 
 router.route("/gallery/all").get(verifyAdminJWT, gallerysCreatedByAdmin);
 
 router.route("/gallery/get/:id").get(verifyAdminJWT, selectedGallery);
 
-router.route("/gallery/update").patch(
-  verifyAdminJWT,
-  galleryUpload.fields([
-    { name: "image", maxCount: 5 }, //upload image file
-    { name: "video", maxCount: 5 }, //upload video file
-  ]),
-  updateGallery
-);
+router
+  .route("/gallery/update")
+  .patch(verifyAdminJWT, galleryUpload.array("image", 5), updateGallery);
 
 router.route("/gallery/delete").delete(verifyAdminJWT, deleteGallery);
 
 /////////////////////////////////////////////////////////
 
-router.route("/user/achievement/certificate/add").post(
-  verifyAdminJWT,
-  userAchievementCertificateUpload.fields([
-    { name: "image", maxCount: 5 }, //upload image file
-    // { name: "video", maxCount: 5 }, //upload video file
-  ]),
-  addCertificateFromAdminSide
-);
+router
+  .route("/user/achievement/certificate/add")
+  .post(
+    verifyAdminJWT,
+    userAchievementCertificateUpload.single("pdf"),
+    addCertificateFromAdminSide
+  );
 
 router
   .route("/user/achievement/certificate/delete")

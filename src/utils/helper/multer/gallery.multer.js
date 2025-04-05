@@ -4,9 +4,9 @@ import fs from "fs";
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    const baseDir = "./public/uploads/post";
+    const baseDir = "./public/uploads/gallery";
 
-    // const uploadDir = "./public/uploads/post";
+    // const uploadDir = "./public/uploads/gallery";
     let uploadDir;
 
     if (file.mimetype.startsWith("image/")) {
@@ -40,21 +40,12 @@ const galleryUpload = multer({
   limits: { fileSize: 200 * 1024 * 1024 }, // Limit to 30MB per file
   fileFilter: (req, file, cb) => {
     const imageTypes = /jpeg|jpg|png|mp4|avi|mov/;
-    // const videoTypes = /mp4|avi|mov|mkv|flv/;
 
     const isImage =
       imageTypes.test(path.extname(file.originalname).toLowerCase()) &&
       imageTypes.test(file.mimetype);
 
-    // const isVideo =
-    //   videoTypes.test(path.extname(file.originalname).toLowerCase()) &&
-    //   videoTypes.test(file.mimetype);
-
-    if (
-      isImage
-      //  ||
-      // isVideo
-    ) {
+    if (isImage) {
       console.log(file);
 
       return cb(null, true); // Allow the file

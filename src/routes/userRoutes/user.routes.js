@@ -13,13 +13,14 @@ import { logout } from "../../controllers/userControllers/logout.controller.js";
 import { loggedUser } from "../../controllers/userControllers/loggedUser.controller.js";
 
 import { updateProfile } from "../../controllers/userControllers/updateProfile.controller.js";
-import profileUpload from "../../utils/helper/multer/profile.multer.js";
+
+import avatarProfileUpload from "../../utils/helper/multer/avatarProfile.multer.js";
+import { updateAvatar } from "../../controllers/userControllers/updateAvatar.controller.js";
 
 // import { selectedUserData } from "../../controllers/userFollowingAndFollowerControllers/selectedUser.controller.js";
 
 import { refreshAccessToken } from "../../controllers/userControllers/refreshAccessToken.controller.js";
 import { searchUser } from "../../controllers/userControllers/searchUser.controller.js";
-import { updateAvatar } from "../../controllers/userControllers/updateAvatar.controller.js";
 
 const router = Router();
 
@@ -45,7 +46,7 @@ router.route("/logout").post(verifyJWT, logout);
 
 router
   .route("/profile/update/avatar")
-  .patch(verifyJWT, profileUpload.single("avatar"), updateAvatar);
+  .patch(verifyJWT, avatarProfileUpload.single("avatar"), updateAvatar);
 
 router.route("/profile/update").patch(verifyJWT, updateProfile);
 
