@@ -13,8 +13,8 @@ const verifyAdminJWT = asyncHandler(async (req, res, next) => {
     if (!token) {
       // throw new ApiError(401, "Unauthorized request");
       return res
-        .status(401)
-        .json(new ApiResponse(401, {}, "Unauthorized admin request."));
+        .status(403)
+        .json(new ApiResponse(403, {}, "Unauthorized admin request."));
     }
 
     const decodedToken = jwt.verify(
@@ -54,10 +54,10 @@ const verifyAdminJWT = asyncHandler(async (req, res, next) => {
     if (error.name === "TokenExpiredError") {
       // throw new ApiError(401, "Access Token has expired. Please log in again.");
       return res
-        .status(401)
+        .status(419)
         .json(
           new ApiResponse(
-            401,
+            419,
             {},
             "Access Token has expired. Please log in again."
           )

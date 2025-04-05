@@ -1,6 +1,5 @@
 import { AccessToken } from "../models/accessToken.model.js";
 import { User } from "../models/user.model.js";
-import { ApiError } from "../utils/helper/ApiError.js";
 import { ApiResponse } from "../utils/helper/ApiResponse.js";
 import { asyncHandler } from "../utils/helper/AsyncHandler.js";
 import jwt from "jsonwebtoken";
@@ -14,8 +13,8 @@ const verifyJWT = asyncHandler(async (req, res, next) => {
     if (!token) {
       // throw new ApiError(401, "Unauthorized request");
       return res
-        .status(401)
-        .json(new ApiResponse(401, {}, "Unauthorized user request."));
+        .status(403)
+        .json(new ApiResponse(403, {}, "Unauthorized user request."));
     }
 
     const decodedToken = jwt.verify(
@@ -57,10 +56,10 @@ const verifyJWT = asyncHandler(async (req, res, next) => {
     if (error.name === "TokenExpiredError") {
       // throw new ApiError(401, "Access Token has expired. Please log in again.");
       return res
-        .status(401)
+        .status(419)
         .json(
           new ApiResponse(
-            401,
+            419,
             {},
             "Access Token has expired. Please log in again."
           )
