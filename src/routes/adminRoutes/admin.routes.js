@@ -1,7 +1,9 @@
 import { Router } from "express";
 import { adminLogin } from "../../controllers/adminControllers/adminLogin.controller.js";
-import { adminLogout } from "../../controllers/adminControllers/adminLogout.controller.js";
+// import { adminLogout } from "../../controllers/adminControllers/adminLogout.controller.js";
 import { verifyAdminJWT } from "../../middlewares/adminAuth.middleware.js";
+
+import { verifyAdminJwtToken } from "../../controllers/adminControllers/verifyAdminJwtToken.controller.js";
 
 import { selectedUserDataAdminSide } from "../../controllers/adminControllers/selectedUserAdminSide.controller.js";
 
@@ -41,7 +43,9 @@ router.route("/signup").post(adminSignUp);
 
 router.route("/login").post(adminLogin);
 
-router.route("/logout").post(verifyAdminJWT, adminLogout);
+router.route("/verify/token").post(verifyAdminJwtToken); // Verify JWT token
+
+// router.route("/logout").post(verifyAdminJWT, adminLogout);
 
 router.route("/profile").get(verifyAdminJWT, loggedAdmin);
 

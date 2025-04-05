@@ -1,5 +1,5 @@
 import { Admin } from "../../models/admin.model.js";
-import { AdminAccessToken } from "../../models/adminAccessToken.model.js";
+// import { AdminAccessToken } from "../../models/adminAccessToken.model.js";
 import { ApiError } from "../../utils/helper/ApiError.js";
 import { ApiResponse } from "../../utils/helper/ApiResponse.js";
 import { asyncHandler } from "../../utils/helper/AsyncHandler.js";
@@ -48,18 +48,18 @@ const adminSignUp = asyncHandler(async (req, res) => {
       admin._id
     );
 
-    // create the corressponding document to store accessToken on db under accessToken model
-    const accessTokenResult = await AdminAccessToken.create({
-      adminId: admin._id,
-      token: accessToken,
-    });
+    // // create the corressponding document to store accessToken on db under accessToken model
+    // const accessTokenResult = await AdminAccessToken.create({
+    //   adminId: admin._id,
+    //   token: accessToken,
+    // });
 
-    if (!accessTokenResult || accessTokenResult.length === 0) {
-      throw new ApiError(
-        500,
-        "Something went wrong while storing access token in db"
-      );
-    }
+    // if (!accessTokenResult || accessTokenResult.length === 0) {
+    //   throw new ApiError(
+    //     500,
+    //     "Something went wrong while storing access token in db"
+    //   );
+    // }
 
     // store refresh token in admin model
     admin.refreshToken = refreshToken;

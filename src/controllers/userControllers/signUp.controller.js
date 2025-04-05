@@ -1,4 +1,4 @@
-import { AccessToken } from "../../models/accessToken.model.js";
+// import { AccessToken } from "../../models/accessToken.model.js";
 import { User } from "../../models/user.model.js";
 import { ApiError } from "../../utils/helper/ApiError.js";
 import { ApiResponse } from "../../utils/helper/ApiResponse.js";
@@ -74,18 +74,18 @@ const signUp = asyncHandler(async (req, res) => {
       user._id
     );
 
-    // create the corressponding document to store accessToken on db under accessToken model
-    const accessTokenResult = await AccessToken.create({
-      userId: user._id,
-      token: accessToken,
-    });
+    // // create the corressponding document to store accessToken on db under accessToken model
+    // const accessTokenResult = await AccessToken.create({
+    //   userId: user._id,
+    //   token: accessToken,
+    // });
 
-    if (!accessTokenResult || accessTokenResult.length === 0) {
-      throw new ApiError(
-        500,
-        "Something went wrong while storing access token in db"
-      );
-    }
+    // if (!accessTokenResult || accessTokenResult.length === 0) {
+    //   throw new ApiError(
+    //     500,
+    //     "Something went wrong while storing access token in db"
+    //   );
+    // }
 
     // store refresh token in user model
     user.refreshToken = refreshToken;

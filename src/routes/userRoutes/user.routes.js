@@ -1,12 +1,12 @@
 import { Router } from "express";
 
 import { sendOtp } from "../../controllers/userControllers/sendOtp.controller.js";
-import { verifyOtp } from "../../controllers/userControllers/verifyOtp.js";
+import { verifyOtp } from "../../controllers/userControllers/verifyOtp.controller.js";
 import { signUp } from "../../controllers/userControllers/signUp.controller.js";
 
 import { login } from "../../controllers/userControllers/login.controller.js";
 import { verifyJWT } from "../../middlewares/userAuth.middleware.js";
-import { logout } from "../../controllers/userControllers/logout.controller.js";
+// import { logout } from "../../controllers/userControllers/logout.controller.js";
 
 // import { loginRateLimiter } from "../middlewares/loginRateLimiter.js";
 
@@ -21,6 +21,7 @@ import { updateAvatar } from "../../controllers/userControllers/updateAvatar.con
 
 import { refreshAccessToken } from "../../controllers/userControllers/refreshAccessToken.controller.js";
 import { searchUser } from "../../controllers/userControllers/searchUser.controller.js";
+import { verifyUserJwtToken } from "../../controllers/userControllers/verifyUserJwtToken.controller.js";
 
 const router = Router();
 
@@ -33,11 +34,13 @@ router.route("/signup").post(signUp);
 // router.route("/login").post(loginRateLimiter, login); // add loginRateLimiter to try avoid brute force attack on phone number
 router.route("/login").post(login); // add later loginRateLimiter to try avoid brute force attack on phone number
 
+router.route("/verify/token").post(verifyUserJwtToken); // Verify JWT token
+
 router.route("/refresh-token").post(refreshAccessToken); // based on refresh token, new access token is assigned
 
 router.route("/profile").get(verifyJWT, loggedUser);
 
-router.route("/logout").post(verifyJWT, logout);
+// router.route("/logout").post(verifyJWT, logout);
 
 // For now avatar is there so use below route
 // router

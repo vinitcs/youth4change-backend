@@ -1,4 +1,4 @@
-import { AccessToken } from "../../models/accessToken.model.js";
+// import { AccessToken } from "../../models/accessToken.model.js";
 import { User } from "../../models/user.model.js";
 import { ApiError } from "../../utils/helper/ApiError.js";
 import { ApiResponse } from "../../utils/helper/ApiResponse.js";
@@ -33,16 +33,16 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
     // Generate a new access token
     const newAccessToken = user.generateAccessToken(); // directly generate from User model if in future also update refresh token then use generateAccessAndRefreshToken util
 
-    // Find and update or create the access token document
-    const updateUserAccessToken = await AccessToken.findOneAndUpdate(
-      { userId: user._id },
-      { token: newAccessToken },
-      { upsert: true, new: true }
-    );
+    // // Find and update or create the access token document
+    // const updateUserAccessToken = await AccessToken.findOneAndUpdate(
+    //   { userId: user._id },
+    //   { token: newAccessToken },
+    //   { upsert: true, new: true }
+    // );
 
-    if (!updateUserAccessToken) {
-      throw new ApiError(500, "Something went wrong to update user token");
-    }
+    // if (!updateUserAccessToken) {
+    //   throw new ApiError(500, "Something went wrong to update user token");
+    // }
 
     return (
       res

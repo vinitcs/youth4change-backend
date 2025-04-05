@@ -1,5 +1,5 @@
 import { Admin } from "../../models/admin.model.js";
-import { AdminAccessToken } from "../../models/adminAccessToken.model.js";
+// import { AdminAccessToken } from "../../models/adminAccessToken.model.js";
 import { ApiError } from "../../utils/helper/ApiError.js";
 import { ApiResponse } from "../../utils/helper/ApiResponse.js";
 import { asyncHandler } from "../../utils/helper/AsyncHandler.js";
@@ -59,19 +59,19 @@ const adminLogin = asyncHandler(async (req, res) => {
     //   }
     // }
 
-    // Find and update or create the access token document
-    const updateAdminAccessToken = await AdminAccessToken.findOneAndUpdate(
-      { adminId: admin._id },
-      { token: accessToken },
-      { upsert: true, new: true }
-    );
+    // // Find and update or create the access token document
+    // const updateAdminAccessToken = await AdminAccessToken.findOneAndUpdate(
+    //   { adminId: admin._id },
+    //   { token: accessToken },
+    //   { upsert: true, new: true }
+    // );
 
-    if (!updateAdminAccessToken) {
-      throw new ApiError(
-        500,
-        "Something went wrong to update admin access token"
-      );
-    }
+    // if (!updateAdminAccessToken) {
+    //   throw new ApiError(
+    //     500,
+    //     "Something went wrong to update admin access token"
+    //   );
+    // }
 
     admin.refreshToken = refreshToken;
     const updateAdminRefreshToken = await admin.save();
