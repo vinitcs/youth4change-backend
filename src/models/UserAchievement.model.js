@@ -19,7 +19,7 @@ const userAchievementSchema = new Schema(
         url: { type: String, trim: true },
         type: {
           type: String,
-          enum: ["image"],
+          enum: ["image", "pdf"],
         },
       },
     ],
