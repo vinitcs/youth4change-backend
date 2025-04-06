@@ -58,4 +58,18 @@ const userProfileDataValidationSchema = Joi.object({
   }),
 });
 
-export { userProfileDataValidationSchema };
+const adminProfileDataValidationSchema = Joi.object({
+  name: Joi.string().min(3).max(100).allow(null, "").optional().messages({
+    "string.base": "Name must be a string.",
+    "string.min": "Name must be at least 3 characters long.",
+    "string.max": "Name must not exceed 100 characters.",
+    // "string.empty": "Name is required.",
+  }),
+
+  email: Joi.string().email().allow(null, "").optional().messages({
+    "string.email": "Please enter a valid email address.",
+    // "string.empty": "Email is required.",
+  }),
+});
+
+export { userProfileDataValidationSchema, adminProfileDataValidationSchema };

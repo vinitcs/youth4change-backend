@@ -11,6 +11,9 @@ import { allReport } from "../../controllers/reportControllers/allReport.control
 import { selectedReport } from "../../controllers/reportControllers/selectedReport.controller.js";
 import { adminSignUp } from "../../controllers/adminControllers/adminSignUp.controller.js";
 import { loggedAdmin } from "../../controllers/adminControllers/loggedAdmin.controller.js";
+import avatarProfileUpload from "../../utils/helper/multer/avatarProfile.multer.js";
+import { updateAvatar } from "../../controllers/adminControllers/updateAvatar.controller.js";
+import { updateProfile } from "../../controllers/adminControllers/updateProfile.controller.js";
 
 import postUpload from "../../utils/helper/multer/post.multer.js";
 import { addPost } from "../../controllers/postControllers/addPost.controller.js";
@@ -49,6 +52,12 @@ router.route("/verify/token").post(verifyAdminJwtToken); // Verify JWT token
 
 router.route("/profile").get(verifyAdminJWT, loggedAdmin);
 
+router
+  .route("/profile/update/avatar")
+  .patch(verifyAdminJWT, avatarProfileUpload.single("avatar"), updateAvatar);
+
+router.route("/profile/update").patch(verifyAdminJWT, updateProfile);
+
 /////////////////////////////////////////////////////////
 
 // All admin side routes are added here for now.
@@ -67,7 +76,7 @@ router.route("/report/:id").get(verifyAdminJWT, selectedReport);
 
 router.route("/stage/create").post(verifyAdminJWT, createStage);
 
-router.route("/stage/update/:stageId").patch(verifyAdminJWT,updateStage)
+router.route("/stage/update/:stageId").patch(verifyAdminJWT, updateStage);
 
 router.route("/stage/all").get(verifyAdminJWT, allStage);
 
