@@ -12,6 +12,7 @@ const postsCreatedByAdmin = asyncHandler(async (req, res) => {
   const skip = (pageNum - 1) * limitNum;
 
   const allPostData = await Post.find({ adminId: adminId })
+    .populate("adminId", "name avatar")
     .sort({ createdAt: -1 }) // Sort by createdAt in descending order
     .skip(skip)
     .limit(limitNum)

@@ -22,6 +22,7 @@ import { updateAvatar } from "../../controllers/userControllers/updateAvatar.con
 import { refreshAccessToken } from "../../controllers/userControllers/refreshAccessToken.controller.js";
 import { searchUser } from "../../controllers/userControllers/searchUser.controller.js";
 import { verifyUserJwtToken } from "../../controllers/userControllers/verifyUserJwtToken.controller.js";
+import { getUserCertificates } from "../../controllers/userAchievementControllers/getUserCertificate.controller.js";
 
 const router = Router();
 
@@ -54,6 +55,8 @@ router
 router.route("/profile/update").patch(verifyJWT, updateProfile);
 
 // router.route("/selected/:id").get(verifyJWT, selectedUserData);
+
+router.route("/certificate/all").get(verifyJWT, getUserCertificates);
 
 //
 //
