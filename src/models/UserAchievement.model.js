@@ -14,15 +14,21 @@ const userAchievementSchema = new Schema(
       required: [true, "User Id is required"],
     },
 
-    media: [
-      {
-        url: { type: String, trim: true },
-        type: {
-          type: String,
-          enum: ["image", "pdf"],
-        },
-      },
-    ],
+    url: { type: String, trim: true },
+    type: {
+      type: String,
+      enum: ["image", "pdf"],
+    },
+
+    // media: [
+    //   {
+    //     url: { type: String, trim: true },
+    //     type: {
+    //       type: String,
+    //       enum: ["image", "pdf"],
+    //     },
+    //   },
+    // ],
   },
   {
     timestamps: true,

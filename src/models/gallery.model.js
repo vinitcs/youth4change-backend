@@ -19,17 +19,23 @@ const gallerySchema = new Schema(
       trim: true,
       default: "",
     },
+    url: { type: String, trim: true, default: "" }, // Store URL/path. If link, then url: ""
+    type: {
+      type: String,
+      enum: ["image", "video"],
+      default: "",
+    },
 
-    media: [
-      {
-        url: { type: String, trim: true, default: "" }, // Store URL/path. If link, then url: ""
-        type: {
-          type: String,
-          enum: ["image", "video"],
-          default: "",
-        },
-      },
-    ],
+    // media: [
+    //   {
+    //     url: { type: String, trim: true, default: "" }, // Store URL/path. If link, then url: ""
+    //     type: {
+    //       type: String,
+    //       enum: ["image", "video"],
+    //       default: "",
+    //     },
+    //   },
+    // ],
   },
   {
     timestamps: true,

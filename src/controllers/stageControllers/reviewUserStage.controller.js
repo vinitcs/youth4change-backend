@@ -65,12 +65,15 @@ const reviewUserStage = asyncHandler(async (req, res) => {
     await UserAchievement.create({
       adminId: admin._id,
       userId: userProgress.userId,
-      media: [
-        {
-          url: resultPath, // If it's a local path, convert to a URL if needed
-          type: "pdf",
-        },
-      ],
+      url: resultPath, // If it's a local path, convert to a URL if needed
+      type: "pdf",
+      
+      // media: [
+      //   {
+      //     url: resultPath, // If it's a local path, convert to a URL if needed
+      //     type: "pdf",
+      //   },
+      // ],
     });
   }
 
