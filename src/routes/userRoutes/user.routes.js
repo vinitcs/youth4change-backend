@@ -1,7 +1,5 @@
 import { Router } from "express";
 
-import { sendOtp } from "../../controllers/userControllers/sendOtp.controller.js";
-import { verifyOtp } from "../../controllers/userControllers/verifyOtp.controller.js";
 import { signUp } from "../../controllers/userControllers/signUp.controller.js";
 
 import { login } from "../../controllers/userControllers/login.controller.js";
@@ -25,10 +23,6 @@ import { verifyUserJwtToken } from "../../controllers/userControllers/verifyUser
 import { getUserCertificates } from "../../controllers/userAchievementControllers/getUserCertificate.controller.js";
 
 const router = Router();
-
-router.route("/send/otp").post(sendOtp);
-
-router.route("/verify/otp").post(verifyOtp);
 
 router.route("/signup").post(signUp);
 

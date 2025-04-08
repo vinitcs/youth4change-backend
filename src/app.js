@@ -38,6 +38,7 @@ app.use(cookieParser());
 // import routes
 
 // User
+import verificationRouter from "./routes/verificationRoutes/verification.routes.js";
 import userRouter from "./routes/userRoutes/user.routes.js";
 import postRouter from "./routes/postRoutes/post.routes.js";
 import galleryRouter from "./routes/galleryRoutes/gallery.routes.js";
@@ -45,6 +46,7 @@ import notificationRouter from "./routes/notificationRoutes/notification.routes.
 import reportRouter from "./routes/reportRoutes/report.routes.js";
 import stageRouter from "./routes/stageRoutes/stage.routes.js";
 
+app.use("/api/v1/verification", verificationRouter);
 app.use("/api/v1/user", userRouter);
 app.use("/api/v1/post", postRouter);
 app.use("/api/v1/gallery", galleryRouter);
