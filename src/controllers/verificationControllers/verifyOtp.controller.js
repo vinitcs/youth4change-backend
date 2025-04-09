@@ -53,7 +53,7 @@ const verifyOtp = asyncHandler(async (req, res) => {
       .json(
         new ApiResponse(
           200,
-          { email, isAlreadyRegistered },
+          { email, isAlreadyRegistered, userType },
           "Email verification successful."
         )
       );

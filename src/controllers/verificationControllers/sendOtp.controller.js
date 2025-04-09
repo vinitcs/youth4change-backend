@@ -73,7 +73,7 @@ const sendOtp = asyncHandler(async (req, res) => {
       new ApiResponse(
         200,
         { email: email },
-        `OTP sent successfully via email. Your one-time OTP is: ${otp}. It will expire within 1 minute.`
+        `OTP sent successfully via email. It will expire within 1 minute.`
       )
     );
 });

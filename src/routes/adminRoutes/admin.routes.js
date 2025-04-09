@@ -24,6 +24,7 @@ import { postsCreatedByAdmin } from "../../controllers/postControllers/postsCrea
 
 import { createStage } from "../../controllers/stageControllers/createStage.controller.js";
 import { updateStage } from "../../controllers/stageControllers/updateStage.controller.js";
+import { deleteStage } from "../../controllers/stageControllers/deleteStage.controller.js";
 import { allStage } from "../../controllers/stageControllers/allStage.controller.js";
 import { selectedStage } from "../../controllers/stageControllers/selectedStage.controller.js";
 import { getUserResponses } from "../../controllers/userStageProgressController.js/getUserResponse.controller.js";
@@ -85,6 +86,8 @@ router.route("/stage/get/:stageId").get(verifyAdminJWT, selectedStage);
 router.route("/stage/userresponse").get(verifyAdminJWT, getUserResponses);
 
 router.route("/stage/approval").patch(verifyAdminJWT, reviewUserStage);
+
+router.route("/stage/delete").delete(verifyAdminJWT, deleteStage);
 
 /////////////////////////////////////////////////////////
 
