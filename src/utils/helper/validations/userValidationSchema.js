@@ -16,6 +16,8 @@ const verifyOtpValidationSchema = Joi.object({
       "string.pattern.base": "OTP must only contain numbers.",
       "string.empty": "OTP is required.",
     }),
+
+  userType: Joi.string().valid("admin", "user").required(),
 });
 
 // During signUp/ register
