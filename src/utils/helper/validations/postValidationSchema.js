@@ -1,11 +1,7 @@
 import Joi from "joi";
 
 const addPostValidationSchema = Joi.object({
-  description: Joi.string().min(10).max(250).allow("").optional().messages({
-    "string.min":
-      "Description must be at least 10 characters long (if provided).",
-    "string.max": "Description must not exceed 250 characters.",
-  }),
+  description: Joi.string().allow("").optional(),
 
   link: Joi.string().allow("").optional(),
 
@@ -24,11 +20,7 @@ const updatePostValidationSchema = Joi.object({
       "any.required": "Post Id is required.",
     }),
 
-  description: Joi.string().min(10).max(250).allow("").optional().messages({
-    "string.min":
-      "Description must be at least 10 characters long (if provided).",
-    "string.max": "Description must not exceed 250 characters.",
-  }),
+  description: Joi.string().allow("").optional(),
 
   link: Joi.string().allow("").optional(),
 

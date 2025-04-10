@@ -20,11 +20,7 @@ const updateGalleryValidationSchema = Joi.object({
       "any.required": "Gallery Id is required.",
     }),
 
-  description: Joi.string().min(10).max(250).allow("").optional().messages({
-    "string.min":
-      "Description must be at least 10 characters long (if provided).",
-    "string.max": "Description must not exceed 250 characters.",
-  }),
+  description: Joi.string().allow("").optional(),
 
   category: Joi.string().optional(),
 
