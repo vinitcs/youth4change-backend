@@ -24,10 +24,11 @@ export const generateCertificate = async ({ name, stage, date, remark }) => {
 
   const font = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
 
-  firstPage.drawText(name, { x: 260, y: 480, size: 40, font, color: rgb(0, 0, 0) });
-  firstPage.drawText(stage, { x: 280, y: 320, size: 30, font, color: rgb(0.1, 0.1, 0.1) });
-  firstPage.drawText(date, { x: 200, y: 110, size: 22, font, color: rgb(0.1, 0.1, 0.1) });
-  firstPage.drawText(remark, { x: 180, y: 250, size: 24, font, color: rgb(0.2, 0.2, 0.2) });
+  firstPage.drawText(name, { x: 600, y: 380, size: 40, font, color: rgb(0, 0, 0) });
+  firstPage.drawText(stage, { x: 680, y: 720, size: 38, font, color: rgb(0, 0, 0)  }); // at top display 
+  firstPage.drawText(stage, { x: 956, y: 338, size: 16, font, color: rgb(0, 0, 0)  }); // at remark
+  // firstPage.drawText(date, { x: 200, y: 110, size: 22, font, color: rgb(0, 0, 0)  });
+  // firstPage.drawText(remark, { x: 180, y: 250, size: 24, font, color: rgb(0, 0, 0)  });
 
   const pdfBytes = await pdfDoc.save();
   fs.writeFileSync(outputPath, pdfBytes);

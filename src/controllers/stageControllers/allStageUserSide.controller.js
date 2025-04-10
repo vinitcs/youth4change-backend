@@ -20,7 +20,7 @@ const allStageUserSide = asyncHandler(async (req, res) => {
       (p) => p.stageId.toString() === stage._id.toString()
     );
 
-    const isSubmitted = !!(progress && progress.status !== "Rejected");;
+    const isSubmitted = !!(progress && progress.status === "Rejected");;
     const isApproved = progress?.status === "Accepted";
     
     // First stage is always accessible; others depend on previous stage approval
