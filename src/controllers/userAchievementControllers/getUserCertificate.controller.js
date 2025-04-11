@@ -6,6 +6,7 @@ const getUserCertificates = asyncHandler(async (req, res) => {
   const userId = req.user._id; // Get id from JWT middleware
 
   const certificates = await UserAchievement.find({ userId })
+    .sort({ createdAt: -1 }) // Newest first
     .populate("adminId", "name avatar")
     .select("-userId");
 
