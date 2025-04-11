@@ -23,7 +23,9 @@ const verifyJWT = asyncHandler(async (req, res, next) => {
       process.env.USER_ACCESS_TOKEN_SECRET
     );
 
-    const user = await User.findById(decodedToken?._id).select("-password -refreshToken").lean();
+    const user = await User.findById(decodedToken?._id)
+      .select("-password -refreshToken")
+      .lean();
 
     if (!user) {
       return res.status(404).json(new ApiResponse(404, {}, "User not found."));
@@ -49,8 +51,6 @@ const verifyJWT = asyncHandler(async (req, res, next) => {
 
     req.user = user; // add to req.user giving access of user for loggedUser and profileProgress.
 
-    console.log("hi");
-    
     next();
   } catch (error) {
     if (error.name === "TokenExpiredError") {
