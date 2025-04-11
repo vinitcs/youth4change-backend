@@ -16,11 +16,15 @@ const allStageUserSide = asyncHandler(async (req, res) => {
 
   // Map stages with submission and approval status
   const stageList = stages.map((stage, index) => {
-    const progress = userProgress.find(
-      (p) => p.stageId.toString() === stage._id.toString()
-    );
+    const progressList = userProgress
+      .filter((p) => p.stageId.toString() === stage._id.toString())
+      .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)); // Sort descending by createdAt
 
-    const isSubmitted = !!progress && (progress.status === "Pending" || progress.status === "Accepted");
+    const progress = progressList[0]; // Get the latest one
+
+    const isSubmitted =
+      !!progress &&
+      (progress.status === "Pending" || progress.status === "Accepted");
     const isApproved = progress?.status === "Accepted";
 
     // First stage is always accessible; others depend on previous stage approval
