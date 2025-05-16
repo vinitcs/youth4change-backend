@@ -27,7 +27,7 @@ import { updateStage } from "../../controllers/stageControllers/updateStage.cont
 import { deleteStage } from "../../controllers/stageControllers/deleteStage.controller.js";
 import { allStage } from "../../controllers/stageControllers/allStage.controller.js";
 import { selectedStage } from "../../controllers/stageControllers/selectedStage.controller.js";
-import { getUserResponses } from "../../controllers/userStageProgressController.js/getUserResponse.controller.js";
+import { getUserResponses } from "../../controllers/userStageProgressControllers/getUserResponse.controller.js";
 import { reviewUserStage } from "../../controllers/stageControllers/reviewUserStage.controller.js";
 
 import { addGallery } from "../../controllers/galleryControllers/addGallery.controller.js";

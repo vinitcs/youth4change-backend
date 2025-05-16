@@ -22,10 +22,10 @@ const verifyOtpValidationSchema = Joi.object({
 
 // During signUp/ register
 const signUpUserValidationSchema = Joi.object({
-  name: Joi.string().min(3).max(100).required().messages({
+  name: Joi.string().required().messages({
     "string.base": "Name must be a string.",
-    "string.min": "Name must be at least 3 characters long.",
-    "string.max": "Name must not exceed 100 characters.",
+    // "string.min": "Name must be at least 3 characters long.",
+    // "string.max": "Name must not exceed 100 characters.",
     "any.required": "Name is required.",
   }),
 
@@ -46,7 +46,7 @@ const signUpUserValidationSchema = Joi.object({
     "any.required": "Gender is required.",
   }),
 
-  cast: Joi.string().required().messages({
+  caste: Joi.string().required().messages({
     "any.required": "Cast is required.",
   }),
 
@@ -66,8 +66,20 @@ const signUpUserValidationSchema = Joi.object({
     "any.required": "City is required.",
   }),
 
+  village: Joi.string().required().messages({
+    "any.required": "City is required.",
+  }),
+
+  district: Joi.string().required().messages({
+    "any.required": "City is required.",
+  }),
+
   state: Joi.string().required().messages({
     "any.required": "State is required.",
+  }),
+
+  aadharNumber: Joi.number().required().messages({
+    "any.required": "Aadhar number is required.",
   }),
 
   education: Joi.string().required().messages({
@@ -78,7 +90,15 @@ const signUpUserValidationSchema = Joi.object({
     "any.required": "College is required.",
   }),
 
+  yearOfAdmission: Joi.number().required().messages({
+    "any.required": "Year of admission is required.",
+  }),
+
   password: Joi.string().required(),
+
+  media: Joi.any().optional(),
+
+  hasConsented: Joi.boolean().default(false),
 });
 
 // During Login

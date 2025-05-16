@@ -21,10 +21,11 @@ import { refreshAccessToken } from "../../controllers/userControllers/refreshAcc
 import { searchUser } from "../../controllers/userControllers/searchUser.controller.js";
 import { verifyUserJwtToken } from "../../controllers/userControllers/verifyUserJwtToken.controller.js";
 import { getUserCertificates } from "../../controllers/userAchievementControllers/getUserCertificate.controller.js";
+import proofUpload from "../../utils/helper/multer/proofUpload.multer.js";
 
 const router = Router();
 
-router.route("/signup").post(signUp);
+router.route("/signup").post(proofUpload.array("media", 5), signUp);
 
 // router.route("/login").post(loginRateLimiter, login); // add loginRateLimiter to try avoid brute force attack on phone number
 router.route("/login").post(login); // add later loginRateLimiter to try avoid brute force attack on phone number

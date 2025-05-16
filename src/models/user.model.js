@@ -34,7 +34,7 @@ const userSchema = new Schema(
       required: true,
     },
 
-    cast: {
+    caste: {
       type: String,
       required: true,
     },
@@ -59,8 +59,23 @@ const userSchema = new Schema(
       required: true,
     },
 
+    village: {
+      type: String,
+      required: true,
+    },
+
+    district: {
+      type: String,
+      required: true,
+    },
+
     state: {
       type: String,
+      required: true,
+    },
+
+    aadharNumber: {
+      type: Number,
       required: true,
     },
 
@@ -71,6 +86,11 @@ const userSchema = new Schema(
 
     college: {
       type: String,
+      required: true,
+    },
+
+    yearOfAdmission: {
+      type: Number,
       required: true,
     },
 
@@ -91,6 +111,22 @@ const userSchema = new Schema(
       type: String,
       trim: true,
       default: "",
+    },
+
+    media: [
+      {
+        url: { type: String, trim: true, default: "" }, // Store URL/path.
+        type: {
+          type: String,
+          enum: ["image", "pdf"],
+          default: "",
+        },
+      },
+    ],
+
+    hasConsented: {
+      type: Boolean,
+      required: true,
     },
 
     refreshToken: {

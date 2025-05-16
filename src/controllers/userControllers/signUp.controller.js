@@ -5,65 +5,149 @@ import { ApiResponse } from "../../utils/helper/ApiResponse.js";
 import { asyncHandler } from "../../utils/helper/AsyncHandler.js";
 import { generateAccessAndRefreshToken } from "../../utils/helper/generateAccessAndRefreshToken.js";
 import { signUpUserValidationSchema } from "../../utils/helper/validations/userValidationSchema.js";
+import fs from "fs/promises";
+
+const deleteFileIfExists = async (filePath) => {
+  try {
+    await fs.access(filePath); // Check if the file exists
+    await fs.unlink(filePath); // Delete the file
+  } catch (error) {
+    if (error.code !== "ENOENT") {
+      console.error(`Error deleting post file: ${filePath}`, error.message);
+    }
+
+    return false; // File did not exist or could not be deleted
+  }
+};
+
+const deleteUploadedFiles = async (req) => {
+  if (req.files && Array.isArray(req.files)) {
+    for (const file of req.files) {
+      let folder = null;
+
+      if (file.mimetype.startsWith("image/")) {
+        folder = "images"; // Store images in 'images' folder
+      } else if (file.mimetype === "application/pdf") {
+        folder = "pdfs"; // Store PDFs in 'proofPdfs' folder
+      }
+
+      if (folder) {
+        // Ensure the folder is determined before deleting
+        const filePath = `./public/uploads/profile/${folder}/${file.filename}`;
+        try {
+          await deleteFileIfExists(filePath);
+        } catch (error) {
+          throw new ApiError(
+            500,
+            `Failed to delete file: ${filePath}, Error: ${error.message}`
+          );
+        }
+      }
+    }
+  }
+};
 
 const signUp = asyncHandler(async (req, res) => {
   try {
     // const { otp, ...validBody } = req.body; // Exclude otp from validation
     // console.log("...validBody", validBody);
 
-    const { userData } = req.body;
+    // const { userData } = req.body;
+    // const {  name,
+    //   email,
+    //   dob,
+    //   age,
+    //   gender,
+    //   caste,
+    //   religion,
+    //   bloodGroup,
+    //   phone,
+    //   city,
+    //   state,
+    //   education,
+    //   college,
+    //   yearOfAdmission,
+    //   password, } = req.body;
 
-    const {
-      name,
-      email,
-      dob,
-      age,
-      gender,
-      cast,
-      religion,
-      bloodGroup,
-      phone,
-      city,
-      state,
-      education,
-      college,
-      password,
-    } = await signUpUserValidationSchema.validateAsync(userData);
+    const validatedData = await signUpUserValidationSchema.validateAsync(
+      req.body
+    );
+
+    if (!validatedData.hasConsented) {
+      await deleteUploadedFiles(req);
+
+      return res
+        .status(403)
+        .json(new ApiResponse(403, {}, `You have not accept the consent.`));
+    }
 
     // Check if user already exists
-    const existedUser = await User.findOne({ email: email });
+    const existedUser = await User.findOne({ email: validatedData.email });
 
     if (existedUser) {
+      await deleteUploadedFiles(req);
+
       return res
         .status(409)
         .json(
           new ApiResponse(
             409,
-            { email: email },
+            { email: validatedData.email },
             `User with email already exists.`
           )
         );
     }
 
+    // Process media uploads and text posts
+    let mediaArray = [];
+
+    if (req.files) {
+      console.log("user proof files", req.files);
+
+      req.files?.forEach((file) => {
+        mediaArray.push({
+          url: file.mimetype.startsWith("image/")
+            ? `/uploads/profile/images/${file.filename}`
+            : file.mimetype === "application/pdf"
+              ? `/uploads/profile/pdfs/${file.filename}`
+              : "",
+
+          type: file.mimetype.startsWith("image/")
+            ? `image`
+            : file.mimetype === "application/pdf"
+              ? `pdf`
+              : "",
+        });
+      });
+    }
+
     // Create user
     const user = await User.create({
-      name: name,
-      email: email,
-      dob: dob,
-      age: age,
-      gender: gender,
-      cast: cast,
-      religion: religion,
-      bloodGroup: bloodGroup,
-      phone: `+91${phone}`,
-      city: city,
-      state: state,
-      education: education,
-      college: college,
-      password: password,
+      name: validatedData.name,
+      email: validatedData.email,
+      dob: validatedData.dob,
+      age: validatedData.age,
+      gender: validatedData.gender,
+      caste: validatedData.caste,
+      religion: validatedData.religion,
+      bloodGroup: validatedData.bloodGroup,
+      phone: `+91${validatedData.phone}`,
+      city: validatedData.city,
+      village: validatedData.village,
+      district: validatedData.district,
+      state: validatedData.state,
+      aadharNumber: validatedData.aadharNumber,
+      education: validatedData.education,
+      college: validatedData.college,
+      yearOfAdmission: validatedData.yearOfAdmission,
+      password: validatedData.password,
+      media: mediaArray,
+      hasConsented: validatedData.hasConsented,
     });
 
     if (!user || user.length === 0) {
+      await deleteUploadedFiles(req);
+
       throw new ApiError(
         500,
         "Something went wrong while registering the user"
@@ -119,6 +203,8 @@ const signUp = asyncHandler(async (req, res) => {
         )
     );
   } catch (error) {
+    await deleteUploadedFiles(req);
+
     if (error.isJoi) {
       // Handle JOI validation errors
       return res

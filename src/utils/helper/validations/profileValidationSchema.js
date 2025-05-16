@@ -25,7 +25,7 @@ const userProfileDataValidationSchema = Joi.object({
     // "any.required": "Gender is required.",
   }),
 
-  cast: Joi.string().allow(null, "").optional().messages({
+  caste: Joi.string().allow(null, "").optional().messages({
     // "any.required": "Cast is required.",
   }),
 

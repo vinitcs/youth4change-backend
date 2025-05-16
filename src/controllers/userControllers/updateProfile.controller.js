@@ -47,7 +47,7 @@ const updateProfile = asyncHandler(async (req, res) => {
       dob: validatedData.dob || user.dob,
       age: validatedData.age || user.age,
       gender: validatedData.gender || user.gender,
-      cast: validatedData.cast || user.cast,
+      caste: validatedData.caste || user.caste,
       religion: validatedData.religion || user.religion,
       bloodGroup: validatedData.bloodGroup || user.bloodGroup,
 
