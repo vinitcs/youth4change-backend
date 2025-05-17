@@ -78,7 +78,7 @@ const signUpUserValidationSchema = Joi.object({
     "any.required": "State is required.",
   }),
 
-  aadharNumber: Joi.number().required().messages({
+  aadharNumber: Joi.string().required().messages({
     "any.required": "Aadhar number is required.",
   }),
 
@@ -98,7 +98,17 @@ const signUpUserValidationSchema = Joi.object({
 
   media: Joi.any().optional(),
 
-  hasConsented: Joi.boolean().default(false),
+  hasMediaConsented: Joi.boolean().default(false),
+
+  isUnderEighteen: Joi.boolean().default(false),
+
+  guardianDetails: Joi.object({
+    name: Joi.string().allow("").optional(),
+    phone: Joi.string().allow("").optional(),
+    hasGuardianConsented: Joi.boolean().default(false),
+  }).optional(),
+
+  hasDeclareConsented: Joi.boolean().default(false),
 });
 
 // During Login

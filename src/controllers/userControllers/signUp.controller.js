@@ -4,6 +4,7 @@ import { ApiError } from "../../utils/helper/ApiError.js";
 import { ApiResponse } from "../../utils/helper/ApiResponse.js";
 import { asyncHandler } from "../../utils/helper/AsyncHandler.js";
 import { generateAccessAndRefreshToken } from "../../utils/helper/generateAccessAndRefreshToken.js";
+import { parseObjectField } from "../../utils/helper/parse/parseObjectField.js";
 import { signUpUserValidationSchema } from "../../utils/helper/validations/userValidationSchema.js";
 import fs from "fs/promises";
 
@@ -69,16 +70,27 @@ const signUp = asyncHandler(async (req, res) => {
     //   yearOfAdmission,
     //   password, } = req.body;
 
+    req.body.guardianDetails = parseObjectField(
+      req.body.guardianDetails,
+      "guardianDetails"
+    );
+
     const validatedData = await signUpUserValidationSchema.validateAsync(
       req.body
     );
 
-    if (!validatedData.hasConsented) {
+    if (!validatedData.hasDeclareConsented) {
       await deleteUploadedFiles(req);
 
       return res
         .status(403)
-        .json(new ApiResponse(403, {}, `You have not accept the consent.`));
+        .json(
+          new ApiResponse(
+            403,
+            {},
+            `You have not accept the declaration consent.`
+          )
+        );
     }
 
     // Check if user already exists
@@ -142,7 +154,10 @@ const signUp = asyncHandler(async (req, res) => {
       yearOfAdmission: validatedData.yearOfAdmission,
       password: validatedData.password,
       media: mediaArray,
-      hasConsented: validatedData.hasConsented,
+      hasMediaConsented: validatedData.hasMediaConsented,
+      isUnderEighteen: validatedData.isUnderEighteen,
+      guardianDetails: validatedData.guardianDetails,
+      hasDeclareConsented: validatedData.hasDeclareConsented,
     });
 
     if (!user || user.length === 0) {

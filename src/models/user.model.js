@@ -17,81 +17,84 @@ const userSchema = new Schema(
       required: true,
       lowercase: true,
       trim: true,
+      index: true,
     },
 
     dob: {
       type: Date,
-      required: true,
+      default: null,
+      index: true,
     },
 
     age: {
       type: Number,
-      requied: true,
+      default: 0,
+      index: true,
     },
 
     gender: {
       type: String,
-      required: true,
+      default: "",
     },
 
     caste: {
       type: String,
-      required: true,
+      default: "",
     },
 
     religion: {
       type: String,
-      reuired: true,
+      default: "",
     },
 
     bloodGroup: {
       type: String,
-      required: true,
+      default: "",
     },
 
     phone: {
       type: String,
-      required: true,
+      default: "",
     },
 
     city: {
       type: String,
-      required: true,
+      default: "",
     },
 
     village: {
       type: String,
-      required: true,
+      default: "",
     },
 
     district: {
       type: String,
-      required: true,
+      default: "",
     },
 
     state: {
       type: String,
-      required: true,
+      default: "",
     },
 
     aadharNumber: {
-      type: Number,
-      required: true,
+      type: String,
+      default: "",
     },
 
     education: {
       type: String,
-      required: true,
+      default: "",
     },
 
     college: {
       type: String,
-      required: true,
+      default: "",
     },
 
     yearOfAdmission: {
       type: Number,
-      required: true,
+      default: 0,
     },
 
     password: {
@@ -124,9 +127,25 @@ const userSchema = new Schema(
       },
     ],
 
-    hasConsented: {
+    hasMediaConsented: {
       type: Boolean,
-      required: true,
+      default: false,
+    },
+
+    isUnderEighteen: {
+      type: Boolean,
+      default: false,
+    },
+
+    guardianDetails: {
+      name: { type: String, default: "" },
+      phone: { type: String, default: "" },
+      hasGuardianConsented: { type: Boolean, default: false },
+    },
+
+    hasDeclareConsented: {
+      type: Boolean,
+      default: false,
     },
 
     refreshToken: {
