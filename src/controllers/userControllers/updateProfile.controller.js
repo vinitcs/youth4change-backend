@@ -12,7 +12,7 @@ const updateProfile = asyncHandler(async (req, res) => {
       req.body
     ); // Collect all validation errors if any);
 
-    console.log("validated ", validatedData);
+    // console.log("validated ", validatedData);
     const userId = req.user._id; // Access user _id from JWT
 
     // // Prepare updated data for fields that are allowed to be changed
@@ -54,9 +54,13 @@ const updateProfile = asyncHandler(async (req, res) => {
       phone: validatedData.phone ? `+91${validatedData.phone}` : user.phone,
 
       city: validatedData.city || user.city,
+      village: validatedData.village || user.village,
+      district: validatedData.district || user.district,
       state: validatedData.state || user.state,
+      aadharNumber: validatedData.aadharNumber || user.aadharNumber,
       education: validatedData.education || user.education,
       college: validatedData.college || user.college,
+      yearOfAdmission: validatedData.yearOfAdmission || user.yearOfAdmission,
     };
 
     // Remove undefined or empty values (ensuring no accidental overrides)

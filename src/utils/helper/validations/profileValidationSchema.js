@@ -45,7 +45,19 @@ const userProfileDataValidationSchema = Joi.object({
     // "any.required": "City is required.",
   }),
 
+  village: Joi.string().allow(null, "").optional().messages({
+    // "any.required": "City is required.",
+  }),
+
+  district: Joi.string().allow(null, "").optional().messages({
+    // "any.required": "City is required.",
+  }),
+
   state: Joi.string().allow(null, "").optional().messages({
+    // "any.required": "State is required.",
+  }),
+
+  aadharNumber: Joi.string().allow(null, "").optional().messages({
     // "any.required": "State is required.",
   }),
 
@@ -54,6 +66,10 @@ const userProfileDataValidationSchema = Joi.object({
   }),
 
   college: Joi.string().allow(null, "").optional().messages({
+    // "any.required": "College is required.",
+  }),
+
+  yearOfAdmission: Joi.number().allow(null, "").optional().messages({
     // "any.required": "College is required.",
   }),
 });
