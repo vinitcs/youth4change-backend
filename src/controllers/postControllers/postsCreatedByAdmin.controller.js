@@ -25,11 +25,17 @@ const postsCreatedByAdmin = asyncHandler(async (req, res) => {
     return res.status(200).json(new ApiResponse(200, { posts: [] }, message));
   }
 
+  // If any null value then convert it into empty string for frontend handling
+  const modifiedPostData = allPostData.map((p) => ({
+    ...p,
+    eventDate: p?.eventDate ? p.eventDate.toISOString().slice(0,10) : "",
+  }));
+
   return res.status(200).json(
     new ApiResponse(
       200,
       {
-        posts: allPostData,
+        posts: modifiedPostData,
       },
       `Successfully fetched posts.`
     )

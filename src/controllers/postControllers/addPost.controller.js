@@ -78,19 +78,23 @@ const addPost = asyncHandler(async (req, res) => {
     }
 
     // Handle link post
-    // if (validatedData.link) {
-    //   mediaArray.push({
-    //     link: validatedData.link || "",
-    //     url: "",
-    //     type: "link",
-    //   });
-    // }
+    if (validatedData.link) {
+      mediaArray.push({
+        link: validatedData.link || "",
+        url: "",
+        type: "link",
+      });
+    }
 
     // Create post
     const newPost = new Post({
       adminId,
+      title: validatedData.title,
       description: validatedData.description,
       media: mediaArray,
+      isEvent: validatedData.isEvent,
+      eventDate: validatedData.eventDate,
+      location: validatedData.location,
     });
 
     const createdPost = await newPost.save();

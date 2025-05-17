@@ -1,12 +1,17 @@
 import Joi from "joi";
 
 const addPostValidationSchema = Joi.object({
+  title: Joi.string().allow("").optional(),
   description: Joi.string().allow("").optional(),
 
   link: Joi.string().allow("").optional(),
 
   image: Joi.any().optional(),
   video: Joi.any().optional(),
+
+  isEvent: Joi.boolean().default(false),
+  eventDate: Joi.string().allow(null, "").optional(),
+  location: Joi.string().allow("").optional(),
 }).messages({
   "object.base": "Invalid input data for creating a post.",
 });

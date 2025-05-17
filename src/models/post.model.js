@@ -8,6 +8,12 @@ const postSchema = new Schema(
       required: [true, "Admin Id is required"],
     },
 
+    title: {
+      type: String,
+      trim: true,
+      default: "",
+    },
+
     description: {
       type: String,
       trim: true,
@@ -25,6 +31,22 @@ const postSchema = new Schema(
         link: { type: String, trim: true, default: "" }, // If media file provided, then link: ""
       },
     ],
+
+    isEvent: {
+      type: Boolean,
+      default: false,
+    },
+
+    eventDate: {
+      type: Date,
+      default: null,
+    },
+
+    location: {
+      type: String,
+      trim: true,
+      default: "",
+    },
   },
   {
     timestamps: true,
@@ -32,5 +54,7 @@ const postSchema = new Schema(
 );
 
 postSchema.index({ adminId: 1 });
+postSchema.index({ eventDate: 1 });
+postSchema.index({ isEvent: 1, eventDate: 1 });
 
 export const Post = model("Post", postSchema);

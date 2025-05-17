@@ -45,6 +45,7 @@ import galleryRouter from "./routes/galleryRoutes/gallery.routes.js";
 import notificationRouter from "./routes/notificationRoutes/notification.routes.js";
 import reportRouter from "./routes/reportRoutes/report.routes.js";
 import stageRouter from "./routes/stageRoutes/stage.routes.js";
+import calendarRouter from "./routes/calendarRoutes/calendar.routes.js";
 
 app.use("/api/v1/verification", verificationRouter);
 app.use("/api/v1/user", userRouter);
@@ -53,6 +54,7 @@ app.use("/api/v1/gallery", galleryRouter);
 app.use("/api/v1/notification", notificationRouter);
 app.use("/api/v1/report", reportRouter);
 app.use("/api/v1/stage", stageRouter);
+app.use("/api/v1/calendar", calendarRouter);
 
 //
 //
