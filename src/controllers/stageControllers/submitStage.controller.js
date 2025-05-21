@@ -75,6 +75,16 @@ const submitStage = asyncHandler(async (req, res) => {
         }
       }
 
+      const validStageListNames = stage.lists.map((item) => item.name);
+      const isValid = selectedLists.every((sel) =>
+        validStageListNames.includes(sel.name)
+      );
+
+      if (!isValid) {
+        await deleteUploadedFiles(req);
+        throw new ApiError(400, "Invalid selected list items submitted.");
+      }
+
       // Check if all stage lists are completed
       const isCompleted = stage.lists.every((stageItem) =>
         updatedLists.some((sel) => sel.name === stageItem.name && sel.checked)
@@ -82,6 +92,31 @@ const submitStage = asyncHandler(async (req, res) => {
 
       userProgress.selectedLists = updatedLists;
       userProgress.isCompleted = isCompleted;
+
+      // Process media uploads
+      let mediaArray = [];
+
+      if (req.files) {
+        console.log("user proof files", req.files);
+
+        req.files?.forEach((file) => {
+          mediaArray.push({
+            url: file.mimetype.startsWith("image/")
+              ? `/uploads/stage/proofUpload/images/${file.filename}`
+              : file.mimetype === "application/pdf"
+                ? `/uploads/stage/proofUpload/pdfs/${file.filename}`
+                : "",
+
+            type: file.mimetype.startsWith("image/")
+              ? `image`
+              : file.mimetype === "application/pdf"
+                ? `pdf`
+                : "",
+          });
+        });
+      }
+
+      userProgress.media = mediaArray;
 
       await userProgress.save();
 
@@ -98,6 +133,17 @@ const submitStage = asyncHandler(async (req, res) => {
         );
     } else {
       // First submission - insert new
+
+      const validStageListNames = stage.lists.map((item) => item.name);
+      const isValid = selectedLists.every((sel) =>
+        validStageListNames.includes(sel.name)
+      );
+
+      if (!isValid) {
+        await deleteUploadedFiles(req);
+        throw new ApiError(400, "Invalid selected list items submitted.");
+      }
+
       const isCompleted = stage.lists.every((stageItem) =>
         selectedLists.some((sel) => sel.name === stageItem.name && sel.checked)
       );
