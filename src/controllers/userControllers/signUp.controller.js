@@ -110,7 +110,7 @@ const signUp = asyncHandler(async (req, res) => {
         );
     }
 
-    // Process media uploads and text posts
+    // Process media uploads
     let mediaArray = [];
 
     if (req.files) {

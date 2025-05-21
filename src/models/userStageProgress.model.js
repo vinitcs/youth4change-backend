@@ -10,6 +10,16 @@ const userStageProgressSchema = new Schema(
         checked: { type: Boolean, required: true, default: false },
       },
     ],
+    media: [
+      {
+        url: { type: String, trim: true, default: "" }, // Store URL/path.
+        type: {
+          type: String,
+          enum: ["image", "pdf"],
+          default: "",
+        },
+      },
+    ],
     isCompleted: { type: Boolean, default: false }, // True if all checkboxes are selected
     status: {
       type: String,
@@ -21,4 +31,7 @@ const userStageProgressSchema = new Schema(
   { timestamps: true }
 );
 
-export const  UserStageProgress = model("UserStageProgress", userStageProgressSchema);
+export const UserStageProgress = model(
+  "UserStageProgress",
+  userStageProgressSchema
+);
