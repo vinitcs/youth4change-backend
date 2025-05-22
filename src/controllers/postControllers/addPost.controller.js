@@ -5,6 +5,8 @@ import fs from "fs/promises";
 import { ApiResponse } from "../../utils/helper/ApiResponse.js";
 import { Post } from "../../models/post.model.js";
 import { Admin } from "../../models/admin.model.js";
+import { User } from "../../models/user.model.js";
+import { Notification } from "../../models/notification.model.js";
 
 const deleteFileIfExists = async (filePath) => {
   try {
@@ -36,7 +38,7 @@ const deleteUploadedFiles = async (req) => {
 };
 
 const addPost = asyncHandler(async (req, res) => {
-  const adminId = req.admin._id; // get id from jwt middleware
+  const { _id: adminId } = req.admin; // get id from jwt middleware
 
   try {
     // Validate input data
@@ -94,7 +96,7 @@ const addPost = asyncHandler(async (req, res) => {
       media: mediaArray,
       isEvent: validatedData.isEvent,
       eventDate: validatedData.eventDate,
-      location: validatedData.location,
+      eventCity: validatedData.eventCity,
     });
 
     const createdPost = await newPost.save();
@@ -105,6 +107,38 @@ const addPost = asyncHandler(async (req, res) => {
       throw new ApiError(500, "Failed to create post.");
     }
 
+    // Trigger background logic without awaiting it
+    // ✅ Background job runs without blocking response
+    (async () => {
+      try {
+        let userIdLists = [];
+
+        if (validatedData.eventCity && validatedData.eventCity.trim() !== "") {
+          userIdLists = await User.find({ city: validatedData.eventCity })
+            .select("_id")
+            .lean();
+        } else {
+          userIdLists = await User.find().select("_id").lean();
+        }
+
+        if (userIdLists.length > 0) {
+          const notifications = userIdLists.map((user) => ({
+            type: `PostCreated`,
+            sharedByUserId: adminId,
+            sharedToUserId: user._id,
+            contentId: createdPost._id,
+            contentType: "post",
+            message: `Checkout this new post.`,
+          }));
+
+          await Notification.insertMany(notifications);
+        }
+      } catch (err) {
+        console.error("Failed to create in-app notifications:", err.message);
+      }
+    })();
+
+    // ✅ Send response immediately after DB save
     return res
       .status(201)
       .json(

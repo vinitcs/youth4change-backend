@@ -26,7 +26,7 @@ const calendarPosts = asyncHandler(async (req, res) => {
     eventDate: { $gte: start, $lt: end },
     isEvent: true,
   })
-    .select("_id title eventDate location")
+    .select("_id title eventDate eventCity")
     .lean();
 
   if (!calendarPostsData || !calendarPostsData.length) {

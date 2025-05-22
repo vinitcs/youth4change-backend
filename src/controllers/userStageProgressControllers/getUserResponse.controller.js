@@ -87,6 +87,7 @@ const getUserResponses = asyncHandler(async (req, res) => {
         stageDescription: "$stage.description",
         selectedLists: 1,
         isCompleted: 1,
+        media: 1,
         status: 1,
         adminRemarks: 1,
         createdAt: 1,

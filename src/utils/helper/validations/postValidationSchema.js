@@ -11,7 +11,7 @@ const addPostValidationSchema = Joi.object({
 
   isEvent: Joi.boolean().default(false),
   eventDate: Joi.string().allow(null, "").optional(),
-  location: Joi.string().allow("").optional(),
+  eventCity: Joi.string().allow("").optional(),
 }).messages({
   "object.base": "Invalid input data for creating a post.",
 });

@@ -42,7 +42,7 @@ const postSchema = new Schema(
       default: null,
     },
 
-    location: {
+    eventCity: {
       type: String,
       trim: true,
       default: "",

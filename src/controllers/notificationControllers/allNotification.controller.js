@@ -1,58 +1,50 @@
 import { Notification } from "../../models/notification.model.js";
-// import { Post } from "../../models/post.model.js";
+import { Post } from "../../models/post.model.js";
 import { ApiResponse } from "../../utils/helper/ApiResponse.js";
 import { asyncHandler } from "../../utils/helper/AsyncHandler.js";
 
-// const getContentData = async (contentId, contentType) => {
-//   let content = "";
+const getContentData = async (contentId, contentType) => {
+  let content = "";
 
-//   switch (contentType) {
-//     case "Post":
-//       content = await Post.findById(contentId).select("media").lean();
-//       if (!content) return {};
+  if (!contentType) return "";
 
-//       // Convert null to "" in post media
-//       if (content.media?.length > 0) {
-//         content.media[0].url = content.media[0].url ?? "";
-//         content.media[0].type = content.media[0].type ?? "";
-//         content.media[0].text = content.media[0].text ?? "";
-//         content.media[0].font = content.media[0].font ?? "";
-//         content.media[0].backgroundColor =
-//           content.media[0].backgroundColor ?? "";
-//       }
-//       return {
-//         ...content,
-//         media: content.media?.length > 0 ? content.media[0] : {},
-//       };
+  switch (contentType) {
+    case "post": {
+      content = await Post.findById(contentId)
+        .select("title description media isEvent eventDate eventCity")
+        .lean();
 
-//     // break;
+      if (!content) return {};
 
-//     case "Event":
-//       content = await Event.findById(contentId)
-//         .select("title date time media address")
-//         .lean();
-//       break;
+      // Ensure content.media[0] is a valid object and assign defaults
+      const media =
+        Array.isArray(content.media) && content.media.length > 0
+          ? content.media[0]
+          : {};
 
-//     case "NGO":
-//       content = await NGO.findById(contentId).select("name media").lean();
-//       break;
+      const { url = "", type = "", link = "" } = media;
 
-//     case "SocialReformer":
-//       content = await SocialReformer.findById(contentId)
-//         .select("name nationality bio media")
-//         .lean();
-//       break;
+      return {
+        title: content.title,
+        description: content.description,
+        url,
+        type,
+        link,
+        isEvent: content.isEvent,
+        eventDate: content.eventDate,
+        eventCity: content.eventCity,
+      };
+    }
 
-//     default:
-//       return "";
-//   }
-//   if (!contentType) return "";
+    default:
+      return "";
+  }
 
-//   return {
-//     ...content,
-//     media: content.media?.length > 0 ? content.media[0] : {},
-//   };
-// };
+  // return {
+  //   ...content,
+  //   media: content.media?.length > 0 ? content.media[0] : {},
+  // };
+};
 
 const allNotification = asyncHandler(async (req, res) => {
   const userId = req.user._id; // Access from JWT middleware
@@ -82,26 +74,26 @@ const allNotification = asyncHandler(async (req, res) => {
       .json(new ApiResponse(200, { notifications: [] }, message));
   }
 
-  // // Populate content data based on contentType
-  // const populatedNotifications = await Promise.all(
-  //   notifications.map(async (notification) => {
-  //     const contentData = await getContentData(
-  //       notification.contentId,
-  //       notification.contentType
-  //     );
-  //     return {
-  //       ...notification,
-  //       contentData: contentData || {},
-  //     };
-  //   })
-  // );
+  // Populate content data based on contentType
+  const populatedNotifications = await Promise.all(
+    notifications.map(async (notification) => {
+      const contentData = await getContentData(
+        notification.contentId,
+        notification.contentType
+      );
+      return {
+        ...notification,
+        contentData: contentData || {},
+      };
+    })
+  );
 
   return res.status(200).json(
     new ApiResponse(
       200,
       {
-        notifications: notifications,
-        // notifications: populatedNotifications,
+        // notifications: notifications,
+        notifications: populatedNotifications,
       },
       `Successfully fetched notifications list.`
     )
