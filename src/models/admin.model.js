@@ -32,6 +32,10 @@ const adminSchema = new Schema(
       trim: true,
       default: "",
     },
+    city: {
+      type: String,
+      default: "",
+    },
     refreshToken: {
       type: String, // Refresh token is stored securely
       default: null,

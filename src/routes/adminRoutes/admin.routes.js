@@ -7,13 +7,17 @@ import { verifyAdminJwtToken } from "../../controllers/adminControllers/verifyAd
 
 import { selectedUserDataAdminSide } from "../../controllers/adminControllers/selectedUserAdminSide.controller.js";
 
-import { allReport } from "../../controllers/reportControllers/allReport.controller.js";
-import { selectedReport } from "../../controllers/reportControllers/selectedReport.controller.js";
 import { adminSignUp } from "../../controllers/adminControllers/adminSignUp.controller.js";
 import { loggedAdmin } from "../../controllers/adminControllers/loggedAdmin.controller.js";
 import avatarProfileUpload from "../../utils/helper/multer/avatarProfile.multer.js";
 import { updateAvatar } from "../../controllers/adminControllers/updateAvatar.controller.js";
 import { updateProfile } from "../../controllers/adminControllers/updateProfile.controller.js";
+import { changeCurrentPassword } from "../../controllers/adminControllers/changeCurrentPassword.controller.js";
+
+import { internalTeamList } from "../../controllers/adminControllers/internalTeamList.controller.js";
+import { searchAdmin } from "../../controllers/adminControllers/searchAdmin.controller.js";
+import { assignRoleInternal } from "../../controllers/adminControllers/assignRoleInternal.controller.js";
+import { assignNewPassword } from "../../controllers/adminControllers/assignNewPassword.controller.js";
 
 import postUpload from "../../utils/helper/multer/post.multer.js";
 import { addPost } from "../../controllers/postControllers/addPost.controller.js";
@@ -27,7 +31,9 @@ import { updateStage } from "../../controllers/stageControllers/updateStage.cont
 import { deleteStage } from "../../controllers/stageControllers/deleteStage.controller.js";
 import { allStage } from "../../controllers/stageControllers/allStage.controller.js";
 import { selectedStage } from "../../controllers/stageControllers/selectedStage.controller.js";
+
 import { getUserResponses } from "../../controllers/userStageProgressControllers/getUserResponse.controller.js";
+import { searchUser } from "../../controllers/adminControllers/searchUser.controller.js";
 import { reviewUserStage } from "../../controllers/stageControllers/reviewUserStage.controller.js";
 
 import { addGallery } from "../../controllers/galleryControllers/addGallery.controller.js";
@@ -59,17 +65,25 @@ router
 
 router.route("/profile/update").patch(verifyAdminJWT, updateProfile);
 
+router.route("/password/change").patch(verifyAdminJWT, changeCurrentPassword);
+
 /////////////////////////////////////////////////////////
+
+// Team list, assign role, change other admins or moderators password
+router.route("/team/list").get(verifyAdminJWT, internalTeamList);
+
+router.route("/search").get(verifyAdminJWT, searchAdmin);
+
+router.route("/role/assign").patch(verifyAdminJWT, assignRoleInternal);
+
+router.route("/password/assign").patch(verifyAdminJWT, assignNewPassword);
 
 // All admin side routes are added here for now.
 
-// Selected User data display
+// Search and selected user data display
+router.route("/user/search").get(verifyAdminJWT, searchUser);
+
 router.route("/userdata").get(verifyAdminJWT, selectedUserDataAdminSide);
-
-// Report audacity routes
-router.route("/report/all").get(verifyAdminJWT, allReport);
-
-router.route("/report/:id").get(verifyAdminJWT, selectedReport);
 
 /////////////////////////////////////////////////////////
 

@@ -12,7 +12,7 @@ const adminSignUp = asyncHandler(async (req, res) => {
 
     // console.log("...validBody", validBody);
 
-    const { name, email, password } =
+    const { name, email, password, role, city } =
       await signUpAdminValidationSchema.validateAsync(validBody);
 
     // Check if admin already exists
@@ -35,6 +35,8 @@ const adminSignUp = asyncHandler(async (req, res) => {
       name: name,
       email: email,
       password: password,
+      role: role,
+      city: city,
     });
 
     if (!admin || admin.length === 0) {
@@ -44,9 +46,8 @@ const adminSignUp = asyncHandler(async (req, res) => {
       );
     }
 
-    const { accessToken, refreshToken } = await generateAdminAccessAndRefreshToken(
-      admin._id
-    );
+    const { accessToken, refreshToken } =
+      await generateAdminAccessAndRefreshToken(admin._id);
 
     // // create the corressponding document to store accessToken on db under accessToken model
     // const accessTokenResult = await AdminAccessToken.create({

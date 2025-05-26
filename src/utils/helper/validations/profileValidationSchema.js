@@ -86,6 +86,8 @@ const adminProfileDataValidationSchema = Joi.object({
     "string.email": "Please enter a valid email address.",
     // "string.empty": "Email is required.",
   }),
+
+  city: Joi.string().allow(null, "").optional(),
 });
 
 export { userProfileDataValidationSchema, adminProfileDataValidationSchema };

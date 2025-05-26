@@ -15,10 +15,7 @@ import { updateProfile } from "../../controllers/userControllers/updateProfile.c
 import avatarProfileUpload from "../../utils/helper/multer/avatarProfile.multer.js";
 import { updateAvatar } from "../../controllers/userControllers/updateAvatar.controller.js";
 
-// import { selectedUserData } from "../../controllers/userFollowingAndFollowerControllers/selectedUser.controller.js";
-
 import { refreshAccessToken } from "../../controllers/userControllers/refreshAccessToken.controller.js";
-import { searchUser } from "../../controllers/userControllers/searchUser.controller.js";
 import { verifyUserJwtToken } from "../../controllers/userControllers/verifyUserJwtToken.controller.js";
 import { getUserCertificates } from "../../controllers/userAchievementControllers/getUserCertificate.controller.js";
 import proofUpload from "../../utils/helper/multer/proofUpload.multer.js";
@@ -38,29 +35,12 @@ router.route("/profile").get(verifyJWT, loggedUser);
 
 // router.route("/logout").post(verifyJWT, logout);
 
-// For now avatar is there so use below route
-// router
-//   .route("/profile/update")
-//   .patch(verifyJWT, avatarUpload.single("avatar"), updateProfile);
-
 router
   .route("/profile/update/avatar")
   .patch(verifyJWT, avatarProfileUpload.single("avatar"), updateAvatar);
 
 router.route("/profile/update").patch(verifyJWT, updateProfile);
 
-// router.route("/selected/:id").get(verifyJWT, selectedUserData);
-
 router.route("/certificate/all").get(verifyJWT, getUserCertificates);
-
-//
-//
-//
-//
-//
-
-// display users data by matching search name or nameTag
-
-router.route("/search").get(verifyJWT, searchUser);
 
 export default router;

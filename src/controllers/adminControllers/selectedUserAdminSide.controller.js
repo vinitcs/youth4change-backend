@@ -5,7 +5,6 @@ import { asyncHandler } from "../../utils/helper/AsyncHandler.js";
 
 const selectedUserDataAdminSide = asyncHandler(async (req, res) => {
   try {
-    // const userId = req.user._id;
     const targetUserId = req.body.targetUserId;
 
     const selectedUserData = await User.findById({ _id: targetUserId }).select(

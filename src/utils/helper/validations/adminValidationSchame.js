@@ -33,6 +33,10 @@ const signUpAdminValidationSchema = Joi.object({
   }),
 
   password: Joi.string().required(),
+
+  role: Joi.string().allow(null,"").optional(),
+  
+  city: Joi.string().allow(null,"").optional(),
 });
 
 // During Login

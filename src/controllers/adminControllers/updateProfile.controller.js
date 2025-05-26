@@ -6,7 +6,7 @@ import { Admin } from "../../models/admin.model.js";
 
 const updateProfile = asyncHandler(async (req, res) => {
   try {
-    console.log("req body", req.body);
+    // console.log("req body", req.body);
 
     const validatedData = await adminProfileDataValidationSchema.validateAsync(
       req.body
@@ -47,6 +47,7 @@ const updateProfile = asyncHandler(async (req, res) => {
     const updatedData = {
       name: validatedData.name || admin.name,
       email: validatedData.email || admin.email,
+      city: validatedData.city || admin.city,
     };
 
     // Remove undefined or empty values (ensuring no accidental overrides)
