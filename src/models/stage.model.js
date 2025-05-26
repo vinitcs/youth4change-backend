@@ -7,6 +7,7 @@ const stageSchema = new Schema(
     lists: [
       {
         name: { type: String, required: true }, // Checkbox label
+        url: { type: String, default: "" }, // Form url (Google form)
       },
     ],
     // requiredExperience: { type: Number, default: 0 },
