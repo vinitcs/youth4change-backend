@@ -56,8 +56,8 @@ const submitStage = asyncHandler(async (req, res) => {
 
     // Only allow a new document if status is Rejected OR if isCompleted
     if (
-      (userProgress && userProgress.status === "Rejected") ||
-      userProgress.isCompleted
+      userProgress &&
+      (userProgress.status === "Rejected" || userProgress.isCompleted)
     ) {
       userProgress = null;
     }
