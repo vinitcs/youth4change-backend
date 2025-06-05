@@ -54,8 +54,11 @@ const submitStage = asyncHandler(async (req, res) => {
     // Find existing progress for this user and stage
     let userProgress = await UserStageProgress.findOne({ userId, stageId });
 
-    // If the last one was rejected, allow a fresh submission
-    if (userProgress && userProgress.status === "Rejected") {
+    // Only allow a new document if status is Rejected OR if isCompleted
+    if (
+      (userProgress && userProgress.status === "Rejected") ||
+      userProgress.isCompleted
+    ) {
       userProgress = null;
     }
 
