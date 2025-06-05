@@ -70,8 +70,10 @@ const submitStage = asyncHandler(async (req, res) => {
           (item) => item.name === incoming.name
         );
         if (index !== -1) {
-          updatedLists[index].checked =
-            updatedLists[index].checked || incoming.checked;
+          // updatedLists[index].checked =
+          //   updatedLists[index].checked || incoming.checked;
+
+          updatedLists[index] = incoming; // Replace with latest value
         } else {
           updatedLists.push(incoming);
         }

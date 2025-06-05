@@ -22,9 +22,12 @@ const allStageUserSide = asyncHandler(async (req, res) => {
 
     const progress = progressList[0]; // Get the latest one
 
-    const isSubmitted =
-      !!progress &&
-      (progress.status === "Pending" || progress.status === "Accepted");
+    // const isSubmitted =
+    //   !!progress &&
+    //   (progress.status === "Pending" || progress.status === "Accepted");
+
+    const isSubmitted = progress?.status === "Pending" || progress?.status === "Accepted";
+
     const isApproved = progress?.status === "Accepted";
 
     // First stage is always accessible; others depend on previous stage approval
