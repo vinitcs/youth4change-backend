@@ -54,14 +54,13 @@ const submitStage = asyncHandler(async (req, res) => {
     // Find existing progress for this user and stage
     let userProgress = await UserStageProgress.findOne({ userId, stageId });
 
-    // Only allow a new document if status is Rejected OR if isCompleted
-    if (
-      userProgress &&
-      (userProgress.status === "Rejected" || userProgress.isCompleted)
-    ) {
+    // Only allow to update previous document if status is not Rejected
+    if (userProgress && userProgress.status === "Rejected") {
       userProgress = null;
     }
 
+    // If: updated in previous response until if it is not rejected or all checkboxes are not true
+    // Else: created new document if previous is rejected or all checkboxes are true
     if (userProgress) {
       // Update selectedLists: merge new selections with existing
       const updatedLists = [...userProgress.selectedLists];
@@ -135,7 +134,8 @@ const submitStage = asyncHandler(async (req, res) => {
           )
         );
     } else {
-      // First submission - insert new
+      // first time submission or if previous submission is rejected - insert new
+      // Only allow a new document if status is Rejected
 
       const validStageListNames = stage.lists.map((item) => item.name);
       const isValid = selectedLists.every((sel) =>
