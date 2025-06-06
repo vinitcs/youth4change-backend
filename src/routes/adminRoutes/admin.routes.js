@@ -25,6 +25,7 @@ import { selectedPost } from "../../controllers/postControllers/selectedPost.con
 import { updatePost } from "../../controllers/postControllers/updatePost.controller.js";
 import { deletePost } from "../../controllers/postControllers/deletePost.controller.js";
 import { postsCreatedByAdmin } from "../../controllers/postControllers/postsCreatedByAdmin.controller.js";
+import { calendarPostsAdminSide } from "../../controllers/calendarControllers/calendarPostsAdminSide.controller.js";
 
 import { createStage } from "../../controllers/stageControllers/createStage.controller.js";
 import { updateStage } from "../../controllers/stageControllers/updateStage.controller.js";
@@ -110,6 +111,8 @@ router
   .post(verifyAdminJWT, postUpload.array("image", 5), addPost);
 
 router.route("/post/all").get(verifyAdminJWT, postsCreatedByAdmin);
+
+router.route("/post/calendar").get(verifyAdminJWT, calendarPostsAdminSide);
 
 router.route("/post/get/:id").get(verifyAdminJWT, selectedPost);
 
