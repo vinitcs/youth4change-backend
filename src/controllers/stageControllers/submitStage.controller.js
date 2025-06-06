@@ -54,127 +54,55 @@ const submitStage = asyncHandler(async (req, res) => {
     // Find existing progress for this user and stage
     let userProgress = await UserStageProgress.findOne({ userId, stageId });
 
-    // Only allow to update previous document if status is not Rejected
-    // if (userProgress && userProgress.status === "Rejected") {
-    //   userProgress = null;
-    // }
+    // Validate submitted lists
+    const validStageListNames = stage.lists.map((item) => item.name);
+    const isValid = selectedLists.every((sel) =>
+      validStageListNames.includes(sel.name)
+    );
 
-    // If: updated in previous response until if it is not rejected or all checkboxes are not true
-    // Else: created new document if previous is rejected or all checkboxes are true
-    if (userProgress && userProgress.status !== "Rejected") {
-      // Update selectedLists: merge new selections with existing
-      const updatedLists = [...userProgress.selectedLists];
+    if (!isValid) {
+      await deleteUploadedFiles(req);
+      throw new ApiError(400, "Invalid selected list items submitted.");
+    }
 
-      for (const incoming of selectedLists) {
-        const index = updatedLists.findIndex(
-          (item) => item.name === incoming.name
-        );
-        if (index !== -1) {
-          // updatedLists[index].checked =
-          //   updatedLists[index].checked || incoming.checked;
+    // Check if all stage lists are completed in current submission
+    const isCompleted = stage.lists.every((stageItem) =>
+      selectedLists.some((sel) => sel.name === stageItem.name && sel.checked)
+    );
 
-          updatedLists[index] = incoming; // Replace with latest value
-        } else {
-          updatedLists.push(incoming);
-        }
-      }
+    // Process media uploads
+    let mediaArray = [];
+    if (req.files) {
+      console.log("user proof files", req.files);
 
-      const validStageListNames = stage.lists.map((item) => item.name);
-      const isValid = selectedLists.every((sel) =>
-        validStageListNames.includes(sel.name)
-      );
+      req.files?.forEach((file) => {
+        mediaArray.push({
+          url: file.mimetype.startsWith("image/")
+            ? `/uploads/stage/proofUpload/images/${file.filename}`
+            : file.mimetype === "application/pdf"
+              ? `/uploads/stage/proofUpload/pdfs/${file.filename}`
+              : "",
 
-      if (!isValid) {
-        await deleteUploadedFiles(req);
-        throw new ApiError(400, "Invalid selected list items submitted.");
-      }
-
-      // Check if all stage lists are completed
-      const isCompleted = stage.lists.every((stageItem) =>
-        updatedLists.some((sel) => sel.name === stageItem.name && sel.checked)
-      );
-
-      userProgress.selectedLists = updatedLists;
-      userProgress.isCompleted = isCompleted;
-
-      // Process media uploads
-      let mediaArray = [];
-
-      if (req.files) {
-        console.log("user proof files", req.files);
-
-        req.files?.forEach((file) => {
-          mediaArray.push({
-            url: file.mimetype.startsWith("image/")
-              ? `/uploads/stage/proofUpload/images/${file.filename}`
-              : file.mimetype === "application/pdf"
-                ? `/uploads/stage/proofUpload/pdfs/${file.filename}`
-                : "",
-
-            type: file.mimetype.startsWith("image/")
-              ? `image`
-              : file.mimetype === "application/pdf"
-                ? `pdf`
-                : "",
-          });
+          type: file.mimetype.startsWith("image/")
+            ? `image`
+            : file.mimetype === "application/pdf"
+              ? `pdf`
+              : "",
         });
-      }
+      });
+    }
 
-      userProgress.media = mediaArray;
+    // FIXED LOGIC: Determine whether to update existing or create new
+    const shouldCreateNew =
+      !userProgress ||
+      userProgress.status === "Rejected" ||
+      userProgress.isCompleted === true;
 
-      await userProgress.save();
-
-      return res
-        .status(200)
-        .json(
-          new ApiResponse(
-            200,
-            { userProgress },
-            isCompleted
-              ? "Stage completed."
-              : "Stage updated. Still incomplete."
-          )
-        );
-    } else {
-      // first time submission or if previous submission is rejected - insert new
-      // Only allow a new document if status is Rejected
-
-      const validStageListNames = stage.lists.map((item) => item.name);
-      const isValid = selectedLists.every((sel) =>
-        validStageListNames.includes(sel.name)
-      );
-
-      if (!isValid) {
-        await deleteUploadedFiles(req);
-        throw new ApiError(400, "Invalid selected list items submitted.");
-      }
-
-      const isCompleted = stage.lists.every((stageItem) =>
-        selectedLists.some((sel) => sel.name === stageItem.name && sel.checked)
-      );
-
-      // Process media uploads
-      let mediaArray = [];
-
-      if (req.files) {
-        console.log("user proof files", req.files);
-
-        req.files?.forEach((file) => {
-          mediaArray.push({
-            url: file.mimetype.startsWith("image/")
-              ? `/uploads/stage/proofUpload/images/${file.filename}`
-              : file.mimetype === "application/pdf"
-                ? `/uploads/stage/proofUpload/pdfs/${file.filename}`
-                : "",
-
-            type: file.mimetype.startsWith("image/")
-              ? `image`
-              : file.mimetype === "application/pdf"
-                ? `pdf`
-                : "",
-          });
-        });
-      }
+    if (shouldCreateNew) {
+      // Create new document if:
+      // 1. No previous progress exists, OR
+      // 2. Previous status is "Rejected", OR
+      // 3. Previous submission was already completed
 
       userProgress = await UserStageProgress.create({
         userId,
@@ -191,6 +119,48 @@ const submitStage = asyncHandler(async (req, res) => {
             200,
             { userProgress },
             isCompleted ? "Stage completed." : "Stage partially submitted."
+          )
+        );
+    } else {
+      // Update existing document if:
+      // 1. Previous progress exists, AND
+      // 2. Previous status is NOT "Rejected", AND
+      // 3. Previous submission was NOT completed (still incomplete)
+
+      // Update selectedLists: merge new selections with existing
+      const updatedLists = [...userProgress.selectedLists];
+
+      for (const incoming of selectedLists) {
+        const index = updatedLists.findIndex(
+          (item) => item.name === incoming.name
+        );
+        if (index !== -1) {
+          updatedLists[index] = incoming; // Replace with latest value
+        } else {
+          updatedLists.push(incoming);
+        }
+      }
+
+      // Check if all stage lists are completed after update
+      const isNowCompleted = stage.lists.every((stageItem) =>
+        updatedLists.some((sel) => sel.name === stageItem.name && sel.checked)
+      );
+
+      userProgress.selectedLists = updatedLists;
+      userProgress.isCompleted = isNowCompleted;
+      userProgress.media = mediaArray;
+
+      await userProgress.save();
+
+      return res
+        .status(200)
+        .json(
+          new ApiResponse(
+            200,
+            { userProgress },
+            isNowCompleted
+              ? "Stage completed."
+              : "Stage updated. Still incomplete."
           )
         );
     }
@@ -210,6 +180,178 @@ export { submitStage };
 //
 //
 //
+
+
+// const submitStage = asyncHandler(async (req, res) => {
+//   const userId = req.user._id;
+
+//   req.body.selectedLists = parseArrayField(
+//     req.body.selectedLists,
+//     "selectedLists"
+//   );
+
+//   const { stageId, selectedLists } = req.body;
+//   try {
+//     const stage = await Stage.findById(stageId);
+//     if (!stage) {
+//       await deleteUploadedFiles(req);
+//       return res.status(404).json(new ApiResponse(404, {}, "Stage not found"));
+//     }
+
+//     // Find existing progress for this user and stage
+//     let userProgress = await UserStageProgress.findOne({ userId, stageId });
+
+//     // Only allow to update previous document if status is not Rejected
+//     // if (userProgress && userProgress.status === "Rejected") {
+//     //   userProgress = null;
+//     // }
+
+//     // If: updated in previous response until if it is not rejected or all checkboxes are not true
+//     // Else: created new document if previous is rejected or all checkboxes are true
+//     if (userProgress && userProgress.status !== "Rejected") {
+//       // Update selectedLists: merge new selections with existing
+//       const updatedLists = [...userProgress.selectedLists];
+
+//       for (const incoming of selectedLists) {
+//         const index = updatedLists.findIndex(
+//           (item) => item.name === incoming.name
+//         );
+//         if (index !== -1) {
+//           // updatedLists[index].checked =
+//           //   updatedLists[index].checked || incoming.checked;
+
+//           updatedLists[index] = incoming; // Replace with latest value
+//         } else {
+//           updatedLists.push(incoming);
+//         }
+//       }
+
+//       const validStageListNames = stage.lists.map((item) => item.name);
+//       const isValid = selectedLists.every((sel) =>
+//         validStageListNames.includes(sel.name)
+//       );
+
+//       if (!isValid) {
+//         await deleteUploadedFiles(req);
+//         throw new ApiError(400, "Invalid selected list items submitted.");
+//       }
+
+//       // Check if all stage lists are completed
+//       const isCompleted = stage.lists.every((stageItem) =>
+//         updatedLists.some((sel) => sel.name === stageItem.name && sel.checked)
+//       );
+
+//       userProgress.selectedLists = updatedLists;
+//       userProgress.isCompleted = isCompleted;
+
+//       // Process media uploads
+//       let mediaArray = [];
+
+//       if (req.files) {
+//         console.log("user proof files", req.files);
+
+//         req.files?.forEach((file) => {
+//           mediaArray.push({
+//             url: file.mimetype.startsWith("image/")
+//               ? `/uploads/stage/proofUpload/images/${file.filename}`
+//               : file.mimetype === "application/pdf"
+//                 ? `/uploads/stage/proofUpload/pdfs/${file.filename}`
+//                 : "",
+
+//             type: file.mimetype.startsWith("image/")
+//               ? `image`
+//               : file.mimetype === "application/pdf"
+//                 ? `pdf`
+//                 : "",
+//           });
+//         });
+//       }
+
+//       userProgress.media = mediaArray;
+
+//       await userProgress.save();
+
+//       return res
+//         .status(200)
+//         .json(
+//           new ApiResponse(
+//             200,
+//             { userProgress },
+//             isCompleted
+//               ? "Stage completed."
+//               : "Stage updated. Still incomplete."
+//           )
+//         );
+//     } else {
+//       // first time submission or if previous submission is rejected - insert new
+//       // Only allow a new document if status is Rejected
+
+//       const validStageListNames = stage.lists.map((item) => item.name);
+//       const isValid = selectedLists.every((sel) =>
+//         validStageListNames.includes(sel.name)
+//       );
+
+//       if (!isValid) {
+//         await deleteUploadedFiles(req);
+//         throw new ApiError(400, "Invalid selected list items submitted.");
+//       }
+
+//       const isCompleted = stage.lists.every((stageItem) =>
+//         selectedLists.some((sel) => sel.name === stageItem.name && sel.checked)
+//       );
+
+//       // Process media uploads
+//       let mediaArray = [];
+
+//       if (req.files) {
+//         console.log("user proof files", req.files);
+
+//         req.files?.forEach((file) => {
+//           mediaArray.push({
+//             url: file.mimetype.startsWith("image/")
+//               ? `/uploads/stage/proofUpload/images/${file.filename}`
+//               : file.mimetype === "application/pdf"
+//                 ? `/uploads/stage/proofUpload/pdfs/${file.filename}`
+//                 : "",
+
+//             type: file.mimetype.startsWith("image/")
+//               ? `image`
+//               : file.mimetype === "application/pdf"
+//                 ? `pdf`
+//                 : "",
+//           });
+//         });
+//       }
+
+//       userProgress = await UserStageProgress.create({
+//         userId,
+//         stageId,
+//         selectedLists,
+//         isCompleted,
+//         media: mediaArray,
+//       });
+
+//       return res
+//         .status(200)
+//         .json(
+//           new ApiResponse(
+//             200,
+//             { userProgress },
+//             isCompleted ? "Stage completed." : "Stage partially submitted."
+//           )
+//         );
+//     }
+//   } catch (error) {
+//     await deleteUploadedFiles(req);
+
+//     return res
+//       .status(500)
+//       .json(new ApiResponse(500, {}, `Server Error: ${error.message}`));
+//   }
+// });
+
+
+
 //
 //
 //
