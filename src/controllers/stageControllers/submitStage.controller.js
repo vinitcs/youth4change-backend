@@ -93,17 +93,16 @@ const submitStage = asyncHandler(async (req, res) => {
     }
 
     // FIXED LOGIC: Determine whether to update existing or create new
-    const shouldCreateNew =
-      !userProgress ||
-      userProgress.status === "Rejected" ||
-      userProgress.isCompleted === true;
+    const shouldCreateNew = !userProgress || 
+                           userProgress.status === "Rejected" || 
+                           userProgress.isCompleted === true;
 
     if (shouldCreateNew) {
       // Create new document if:
       // 1. No previous progress exists, OR
-      // 2. Previous status is "Rejected", OR
+      // 2. Previous status is "Rejected", OR  
       // 3. Previous submission was already completed
-
+      
       userProgress = await UserStageProgress.create({
         userId,
         stageId,
@@ -148,7 +147,12 @@ const submitStage = asyncHandler(async (req, res) => {
 
       userProgress.selectedLists = updatedLists;
       userProgress.isCompleted = isNowCompleted;
-      userProgress.media = mediaArray;
+      
+      // Merge media: Keep existing media and add new uploads
+      if (mediaArray.length > 0) {
+        userProgress.media = [...userProgress.media, ...mediaArray];
+      }
+      // If no new files uploaded, keep existing media as is
 
       await userProgress.save();
 
@@ -172,7 +176,6 @@ const submitStage = asyncHandler(async (req, res) => {
       .json(new ApiResponse(500, {}, `Server Error: ${error.message}`));
   }
 });
-
 export { submitStage };
 
 //
@@ -180,7 +183,6 @@ export { submitStage };
 //
 //
 //
-
 
 // const submitStage = asyncHandler(async (req, res) => {
 //   const userId = req.user._id;
@@ -349,8 +351,6 @@ export { submitStage };
 //       .json(new ApiResponse(500, {}, `Server Error: ${error.message}`));
 //   }
 // });
-
-
 
 //
 //
