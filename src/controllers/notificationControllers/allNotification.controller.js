@@ -58,7 +58,7 @@ const allNotification = asyncHandler(async (req, res) => {
   const skip = (pageNum - 1) * limitNum;
 
   let notifications = await Notification.find({ sharedToUserId: userId })
-    .select("-isBroadcast -contentId -contentType -isDeleted")
+    .select("-isBroadcast -isDeleted")
     .sort({ createdAt: -1 }) // Latest first
     .skip(skip)
     .limit(limitNum)
@@ -77,13 +77,10 @@ const allNotification = asyncHandler(async (req, res) => {
 
   // Populate content data based on contentType
   const populatedNotifications = await Promise.all(
-    notifications.map(async (notification) => {
-      const contentData = await getContentData(
-        notification.contentId,
-        notification.contentType
-      );
+    notifications.map(async ({ contentId, contentType, ...rest }) => {
+      const contentData = await getContentData(contentId, contentType);
       return {
-        ...notification,
+        ...rest,
         contentData: contentData || {},
       };
     })
