@@ -25,13 +25,14 @@ const getContentData = async (contentId, contentType) => {
       const { url = "", type = "", link = "" } = media;
 
       return {
+        _id: content._id,
         title: content.title,
         description: content.description,
         url,
         type,
         link,
         isEvent: content.isEvent,
-        eventDate: content.eventDate,
+        eventDate: content.eventDate || "",
         eventCity: content.eventCity,
       };
     }
@@ -57,7 +58,7 @@ const allNotification = asyncHandler(async (req, res) => {
   const skip = (pageNum - 1) * limitNum;
 
   let notifications = await Notification.find({ sharedToUserId: userId })
-    .select("-isBroadcast -sharedToUserId -contentId -contentType -isDeleted")
+    .select("-isBroadcast -contentId -contentType -isDeleted")
     .sort({ createdAt: -1 }) // Latest first
     .skip(skip)
     .limit(limitNum)
